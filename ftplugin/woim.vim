@@ -1,8 +1,7 @@
 " Vim syntax and macro file
 " Language :	Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Last mod.:	2008-11-27
-" Version:		0.4
+" Last mod.:	2009-04-12
 "
 " Use only tabs or shifts for indentations
 " Use \0 to \9 to show the list with that many levels expanded
@@ -29,7 +28,7 @@ set fillchars=fold:\
 autocmd InsertLeave * :syntax sync fromstart
 
 " Attributes - anything that ends in a colon
-syn	match	WOIMattr "\s\{-}[a-zA-ZæøåÆØÅ0-9_= ]\+:\s"	contained contains=WOIMtodo,WOIMkey
+syn	match	WOIMattr "\s\{-}[a-zA-ZæøåÆØÅ0-9,_= ]\+:\s"	contained contains=WOIMtodo,WOIMkey
 
 " Index (any number in front)
 syn	match	WOIMindex "\t[0-9.]\+\s"					contained
@@ -49,6 +48,9 @@ syn	match	WOIMkey		"[A-ZÆØÅ _]\+:"					contained
 " Mark semicolon as stringing together lines
 syn match	WOIMsc		";"								contained
 
+" Multiline
+syn match	WOIMmulti	"\s\* "							contained
+
 " TODO  or FIXME
 syn	keyword WOIMtodo TODO FIXME							contained
 
@@ -58,7 +60,7 @@ syn	match   WOIMi		" /.\{-}/ "						contained
 syn	match   WOIMu		" _.\{-}_ "						contained
 
 " Cluster the above
-syn cluster WOIMtxt contains=WOIMindex,WOIMattr,WOIMcond,WOIMcomment,WOIMref,WOIMkey,WOIMsc,WOIMtodo,WOIMb,WOIMi,WOIMu
+syn cluster WOIMtxt contains=WOIMindex,WOIMattr,WOIMcond,WOIMcomment,WOIMref,WOIMmulti,WOIMkey,WOIMsc,WOIMtodo,WOIMb,WOIMi,WOIMu
 
 " Levels
 syn region L9 start="^\t\{8}\S" end="^\(^\t\{9,}\S\)\@!" fold contained contains=@WOIMtxt
@@ -96,10 +98,10 @@ hi def link		WOIMsc			Type
 hi def link		WOIMtodo		Todo
 hi def link		WOIMcomment		Comment
 hi def link		WOIMref			Statement
+hi def link		WOIMmulti		String
 hi				WOIMi			ctermfg=none ctermbg=none gui=italic term=italic cterm=italic
 hi				WOIMb			ctermfg=none ctermbg=none gui=bold term=bold cterm=bold
 hi				WOIMu			ctermfg=none ctermbg=none gui=underline term=underline cterm=underline
-"hi def link		F0				Statement
 
 " macros
 map <leader>0	:set foldlevel=0<CR>
