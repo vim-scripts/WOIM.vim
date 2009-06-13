@@ -1,12 +1,16 @@
 " Vim syntax and macro file
 " Language :	Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Last mod.:	2009-04-12
+" Last mod.:	2009-06-11
+"
+" Changes since last mod:
+"	Added the macro <leader><SPACE> to accomodate for templates
 "
 " Use only tabs or shifts for indentations
 " Use \0 to \9 to show the list with that many levels expanded
 " Use <SPACE> to toggle one fold
 " Syntax updates every time you leave Insert mode
+" Use <leader><SPACE> to go to the next open template element
 
 if exists("b:current_syntax")
   finish
@@ -88,7 +92,8 @@ function! WOIMFoldText()
 endfunction
 
 " Highlighting and Linking :
-hi				Folded			ctermfg=yellow ctermbg=none cterm=bold
+"hi				Folded			ctermfg=yellow ctermbg=none cterm=bold
+hi				Folded			ctermfg=yellow ctermbg=none
 hi				L1				gui=bold term=bold cterm=bold
 hi def link		WOIMattr		String
 hi def link		WOIMindex		Statement
@@ -115,5 +120,7 @@ map <leader>7	:set foldlevel=7<CR>
 map <leader>8	:set foldlevel=8<CR>
 map <leader>9	:set foldlevel=9<CR>
 map <SPACE>		za
+
+map <leader><SPACE>	/=\s*$<CR>A
 
 " vim: ts=4
