@@ -1,16 +1,17 @@
 " Vim syntax and macro file
 " Language :	Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Last mod.:	2009-06-11
+" Last mod.:	2009-06-16
 "
 " Changes since last mod:
-"	Added the macro <leader><SPACE> to accomodate for templates
+"	Fixed an error in syntax highlighting properties containing a "-"
 "
 " Use only tabs or shifts for indentations
 " Use \0 to \9 to show the list with that many levels expanded
 " Use <SPACE> to toggle one fold
 " Syntax updates every time you leave Insert mode
 " Use <leader><SPACE> to go to the next open template element
+" A template element is a WOIM item ending in an equal sign
 
 if exists("b:current_syntax")
   finish
@@ -32,7 +33,7 @@ set fillchars=fold:\
 autocmd InsertLeave * :syntax sync fromstart
 
 " Attributes - anything that ends in a colon
-syn	match	WOIMattr "\s\{-}[a-zA-ZæøåÆØÅ0-9,_= ]\+:\s"	contained contains=WOIMtodo,WOIMkey
+syn	match	WOIMattr "\s\{-}[a-zA-ZæøåÆØÅ0-9,_= \-]\+:\s"	contained contains=WOIMtodo,WOIMkey
 
 " Index (any number in front)
 syn	match	WOIMindex "\t[0-9.]\+\s"					contained
