@@ -1,10 +1,11 @@
 " Vim syntax and macro file
 " Language :	Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Last mod.:	2009-06-16
+" Last mod.:	2009-07-15
 "
 " Changes since last mod:
-"	Fixed an error in syntax highlighting properties containing a "-"
+"	Changed references (WOIMref) to highlight as "Define"
+"	Added syntax highlighting for vim set-lines
 "
 " Use only tabs or shifts for indentations
 " Use \0 to \9 to show the list with that many levels expanded
@@ -45,7 +46,7 @@ syn	match	WOIMcond	"\[.*\]"						contained contains=WOIMtodo
 syn	match	WOIMcomment	"(.\{-})"						contained contains=WOIMtodo,WOIMref
 
 " References start with a hash (#)
-syn	match	WOIMref		"#[a-zA-ZæøåÆØÅ0-9. _]\+"		contained contains=WOIMcomment
+syn	match	WOIMref		"#[a-zA-ZæøåÆØÅ0-9.:/ _]\+"		contained contains=WOIMcomment
 
 " WOIM operators
 syn	match	WOIMkey		"[A-ZÆØÅ _]\+:"					contained
@@ -93,7 +94,6 @@ function! WOIMFoldText()
 endfunction
 
 " Highlighting and Linking :
-"hi				Folded			ctermfg=yellow ctermbg=none cterm=bold
 hi				Folded			ctermfg=yellow ctermbg=none
 hi				L1				gui=bold term=bold cterm=bold
 hi def link		WOIMattr		String
@@ -103,11 +103,15 @@ hi def link		WOIMkey			Function
 hi def link		WOIMsc			Type
 hi def link		WOIMtodo		Todo
 hi def link		WOIMcomment		Comment
-hi def link		WOIMref			Statement
+hi def link		WOIMref			Define
 hi def link		WOIMmulti		String
 hi				WOIMi			ctermfg=none ctermbg=none gui=italic term=italic cterm=italic
 hi				WOIMb			ctermfg=none ctermbg=none gui=bold term=bold cterm=bold
 hi				WOIMu			ctermfg=none ctermbg=none gui=underline term=underline cterm=underline
+
+" VIM parameters
+syn	match		WOIMvim			"^vim:.*"
+hi def link		WOIMvim			Function
 
 " macros
 map <leader>0	:set foldlevel=0<CR>
