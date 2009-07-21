@@ -1,11 +1,12 @@
 " Vim syntax and macro file
 " Language :	Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Last mod.:	2009-07-15
+" Last mod.:	2009-07-21
 "
 " Changes since last mod:
-"	Changed references (WOIMref) to highlight as "Define"
-"	Added syntax highlighting for vim set-lines
+"	Expanded to 15 fold levels
+"	Fixed syntax syncing when entering the document in the first place
+"	Fixed synax highlighting of identifiers
 "
 " Use only tabs or shifts for indentations
 " Use \0 to \9 to show the list with that many levels expanded
@@ -31,6 +32,7 @@ set	tabstop=2
 set	softtabstop=2
 set	foldmethod=syntax
 set fillchars=fold:\ 
+syn sync fromstart
 autocmd InsertLeave * :syntax sync fromstart
 
 " Attributes - anything that ends in a colon
@@ -69,15 +71,21 @@ syn	match   WOIMu		" _.\{-}_ "						contained
 syn cluster WOIMtxt contains=WOIMindex,WOIMattr,WOIMcond,WOIMcomment,WOIMref,WOIMmulti,WOIMkey,WOIMsc,WOIMtodo,WOIMb,WOIMi,WOIMu
 
 " Levels
-syn region L9 start="^\t\{8}\S" end="^\(^\t\{9,}\S\)\@!" fold contained contains=@WOIMtxt
-syn region L8 start="^\t\{7}\S" end="^\(^\t\{8,}\S\)\@!" fold contained contains=@WOIMtxt,L9
-syn region L7 start="^\t\{6}\S" end="^\(^\t\{7,}\S\)\@!" fold contained contains=@WOIMtxt,L8,L9
-syn region L6 start="^\t\{5}\S" end="^\(^\t\{6,}\S\)\@!" fold contained contains=@WOIMtxt,L7,L8,L9
-syn region L5 start="^\t\{4}\S" end="^\(^\t\{5,}\S\)\@!" fold contained contains=@WOIMtxt,L6,L7,L8,L9
-syn region L4 start="^\t\{3}\S" end="^\(^\t\{4,}\S\)\@!" fold contained contains=@WOIMtxt,L5,L6,L7,L8,L9
-syn region L3 start="^\t\{2}\S" end="^\(^\t\{3,}\S\)\@!" fold contained contains=@WOIMtxt,L4,L5,L6,L7,L8,L9
-syn region L2 start="^\t\{1}\S" end="^\(^\t\{2,}\S\)\@!" fold contained contains=@WOIMtxt,L3,L4,L5,L6,L7,L8,L9
-syn region L1 start="^\S"       end="^\(^\t\{1,}\S\)\@!" fold           contains=@WOIMtxt,L2,L3,L4,L5,L6,L7,L8,L9
+syn region L15 start="^\t\{14}\S" end="^\(^\t\{15,}\S\)\@!" fold contained contains=@WOIMtxt
+syn region L14 start="^\t\{13}\S" end="^\(^\t\{14,}\S\)\@!" fold contained contains=@WOIMtxt,L15
+syn region L13 start="^\t\{12}\S" end="^\(^\t\{13,}\S\)\@!" fold contained contains=@WOIMtxt,L14,L15
+syn region L12 start="^\t\{11}\S" end="^\(^\t\{12,}\S\)\@!" fold contained contains=@WOIMtxt,L13,L14,L15
+syn region L11 start="^\t\{10}\S" end="^\(^\t\{11,}\S\)\@!" fold contained contains=@WOIMtxt,L12,L13,L14,L15
+syn region L10 start="^\t\{9}\S" end="^\(^\t\{10,}\S\)\@!" fold contained contains=@WOIMtxt,L11,L12,L13,L14,L15
+syn region L9 start="^\t\{8}\S" end="^\(^\t\{9,}\S\)\@!" fold contained contains=@WOIMtxt,L10,L11,L12,L13,L14,L15
+syn region L8 start="^\t\{7}\S" end="^\(^\t\{8,}\S\)\@!" fold contained contains=@WOIMtxt,L9,L10,L11,L12,L13,L14,L15
+syn region L7 start="^\t\{6}\S" end="^\(^\t\{7,}\S\)\@!" fold contained contains=@WOIMtxt,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L6 start="^\t\{5}\S" end="^\(^\t\{6,}\S\)\@!" fold contained contains=@WOIMtxt,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L5 start="^\t\{4}\S" end="^\(^\t\{5,}\S\)\@!" fold contained contains=@WOIMtxt,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L4 start="^\t\{3}\S" end="^\(^\t\{4,}\S\)\@!" fold contained contains=@WOIMtxt,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L3 start="^\t\{2}\S" end="^\(^\t\{3,}\S\)\@!" fold contained contains=@WOIMtxt,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L2 start="^\t\{1}\S" end="^\(^\t\{2,}\S\)\@!" fold contained contains=@WOIMtxt,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L1 start="^\S"       end="^\(^\t\{1,}\S\)\@!" fold           contains=@WOIMtxt,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
 
 " Folds
 set foldtext=WOIMFoldText()
@@ -97,7 +105,7 @@ endfunction
 hi				Folded			ctermfg=yellow ctermbg=none
 hi				L1				gui=bold term=bold cterm=bold
 hi def link		WOIMattr		String
-hi def link		WOIMindex		Statement
+hi def link		WOIMindex		Define
 hi def link		WOIMcond		Type
 hi def link		WOIMkey			Function
 hi def link		WOIMsc			Type
@@ -124,6 +132,12 @@ map <leader>6	:set foldlevel=6<CR>
 map <leader>7	:set foldlevel=7<CR>
 map <leader>8	:set foldlevel=8<CR>
 map <leader>9	:set foldlevel=9<CR>
+map <leader>a	:set foldlevel=10<CR>
+map <leader>b	:set foldlevel=11<CR>
+map <leader>c	:set foldlevel=12<CR>
+map <leader>d	:set foldlevel=13<CR>
+map <leader>e	:set foldlevel=14<CR>
+map <leader>f	:set foldlevel=15<CR>
 map <SPACE>		za
 
 map <leader><SPACE>	/=\s*$<CR>A
