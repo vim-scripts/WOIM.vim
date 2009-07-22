@@ -1,12 +1,10 @@
 " Vim syntax and macro file
 " Language :	Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Last mod.:	2009-07-21
+" Last mod.:	2009-07-22
 "
 " Changes since last mod:
-"	Expanded to 15 fold levels
-"	Fixed syntax syncing when entering the document in the first place
-"	Fixed synax highlighting of identifiers
+"	Fixed highlighting of attributes with a colon (like time stamps)
 "
 " Use only tabs or shifts for indentations
 " Use \0 to \9 to show the list with that many levels expanded
@@ -36,7 +34,7 @@ syn sync fromstart
 autocmd InsertLeave * :syntax sync fromstart
 
 " Attributes - anything that ends in a colon
-syn	match	WOIMattr "\s\{-}[a-zA-ZæøåÆØÅ0-9,_= \-]\+:\s"	contained contains=WOIMtodo,WOIMkey
+syn	match	WOIMattr "\s\{-}[a-zA-ZæøåÆØÅ0-9,_= \-:]\+:\s"	contained contains=WOIMtodo,WOIMkey,WOIMcomment
 
 " Index (any number in front)
 syn	match	WOIMindex "\t[0-9.]\+\s"					contained
