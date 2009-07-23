@@ -1,10 +1,13 @@
 " Vim syntax and macro file
 " Language :	Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Last mod.:	2009-07-22
+" Last mod.:	2009-07-23
 "
 " Changes since last mod:
-"	Fixed highlighting of attributes with a colon (like time stamps)
+"	Expanded Attributes to include relative times and greater/smaller than
+"	References with spaces must be put in quotes
+"	Fixed references that includes ampersands ("&")
+"	Made references in attributes possible
 "
 " Use only tabs or shifts for indentations
 " Use \0 to \9 to show the list with that many levels expanded
@@ -34,7 +37,7 @@ syn sync fromstart
 autocmd InsertLeave * :syntax sync fromstart
 
 " Attributes - anything that ends in a colon
-syn	match	WOIMattr "\s\{-}[a-zA-ZæøåÆØÅ0-9,_= \-:]\+:\s"	contained contains=WOIMtodo,WOIMkey,WOIMcomment
+syn	match	WOIMattr '\s\{-}[a-zA-ZæøåÆØÅ0-9,_= \-+<>()#":]\+:\s' contained contains=WOIMtodo,WOIMkey,WOIMcomment
 
 " Index (any number in front)
 syn	match	WOIMindex "\t[0-9.]\+\s"					contained
@@ -46,7 +49,7 @@ syn	match	WOIMcond	"\[.*\]"						contained contains=WOIMtodo
 syn	match	WOIMcomment	"(.\{-})"						contained contains=WOIMtodo,WOIMref
 
 " References start with a hash (#)
-syn	match	WOIMref		"#[a-zA-ZæøåÆØÅ0-9.:/ _]\+"		contained contains=WOIMcomment
+syn	match	WOIMref	'#\("[a-zA-ZæøåÆØÅ0-9.:/ _&]\+"\|[a-zA-ZæøåÆØÅ0-9.:/_&]\+\)' contained contains=WOIMcomment
 
 " WOIM operators
 syn	match	WOIMkey		"[A-ZÆØÅ _]\+:"					contained
