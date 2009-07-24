@@ -1,13 +1,11 @@
 " Vim syntax and macro file
 " Language :	Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Last mod.:	2009-07-23
+" Last mod.:	2009-07-24
 "
 " Changes since last mod:
-"	Expanded Attributes to include relative times and greater/smaller than
-"	References with spaces must be put in quotes
-"	Fixed references that includes ampersands ("&")
-"	Made references in attributes possible
+"	Fixed attributes ending in capitals that was treated as a WOIMkey
+"	Fixed references containing a hyphen
 "
 " Use only tabs or shifts for indentations
 " Use \0 to \9 to show the list with that many levels expanded
@@ -49,10 +47,10 @@ syn	match	WOIMcond	"\[.*\]"						contained contains=WOIMtodo
 syn	match	WOIMcomment	"(.\{-})"						contained contains=WOIMtodo,WOIMref
 
 " References start with a hash (#)
-syn	match	WOIMref	'#\("[a-zA-ZæøåÆØÅ0-9.:/ _&]\+"\|[a-zA-ZæøåÆØÅ0-9.:/_&]\+\)' contained contains=WOIMcomment
+syn	match	WOIMref	'#\("[a-zA-ZæøåÆØÅ0-9.:/ _&-]\+"\|[a-zA-ZæøåÆØÅ0-9.:/_&-]\+\)' contained contains=WOIMcomment
 
 " WOIM operators
-syn	match	WOIMkey		"[A-ZÆØÅ _]\+:"					contained
+syn	match	WOIMkey		"\s[A-ZÆØÅ _]\+:"				contained
 
 " Mark semicolon as stringing together lines
 syn match	WOIMsc		";"								contained
