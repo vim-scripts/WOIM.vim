@@ -3,20 +3,18 @@
 " Author:		Geir Isene <geir@isene.com>
 " Web_site:		http://www.isene.com/
 " WOIM_def:		http://www.isene.com/artweb.cgi?article=012-woim.txt 
-" Version:		0.9
-" Modified:		2009-08-06
+" Version:		0.9.1
+" Modified:		2009-08-21
 "
 " Changes since previous mod:
-"	New_feature:	WOIMquote - highlighting text in quotes
-"	New_feature:	Accommodated for the use of subroutine calls (##ref)
-"	Fix:			Cleaned up syntax variable names to fit modern WOIM
-"	Fix:			Multi-lines have consecutive lines start with a <space>
-"	Fix:			Quotes or Comment can now span several lines
-"	Fix:			Comments allowed in Operators
-"	Fix:			Comments and references allowed inside Qualifiers
-"	Fix:			Identifier must end in a period and then a space
-"	Bug_fix:		Allowing a period to be part of a tag
-"	Bug_fix:		Fixed wrong markup for astrices not used for multi-line
+"	New_feature:	Added highlighting of item motions:
+"					<<		means "delete this item" (put at the end of a line)
+"					>>#1.1. means "move this item to after item 1.1."
+"					->		means "indent item right"
+"					<-<-	means "indent item two left"
+"					>>#1.-> means "move item to after item 1. and indent right"
+"
+" INSTRUCTIONS
 "
 " Use only tabs/shifts for indentations
 "
@@ -80,13 +78,16 @@ syn	match	WOIMquote	'"\_.\{-}"'						contained contains=WOIMtodo,WOIMref
 " TODO  or FIXME
 syn	keyword WOIMtodo	TODO FIXME						contained
 
+" Item motion
+syn match	WOIMmove	">>\|<<\|->\|<-"				contained
+
 " Bold and Italic
 syn	match   WOIMb		" \*.\{-}\* "					contained
 syn	match   WOIMi		" /.\{-}/ "						contained
 syn	match   WOIMu		" _.\{-}_ "						contained
 
 " Cluster the above
-syn cluster WOIMtxt contains=WOIMident,WOIMmulti,WOIMop,WOIMqual,WOIMtag,WOIMref,WOIMcomment,WOIMquote,WOIMsc,WOIMtodo,WOIMb,WOIMi,WOIMu
+syn cluster WOIMtxt contains=WOIMident,WOIMmulti,WOIMop,WOIMqual,WOIMtag,WOIMref,WOIMcomment,WOIMquote,WOIMsc,WOIMtodo,WOIMmove,WOIMb,WOIMi,WOIMu
 
 " Levels
 syn region L15 start="^\t\{14} \=\S" end="^\(^\t\{15,} \=\S\)\@!" fold contained contains=@WOIMtxt
@@ -131,6 +132,7 @@ hi def link		WOIMcomment		Comment
 hi def link		WOIMquote		Comment
 hi def link		WOIMsc			Type
 hi def link		WOIMtodo		Todo
+hi def link		WOIMmove		Todo
 hi				WOIMb			ctermfg=none ctermbg=none gui=bold term=bold cterm=bold
 hi				WOIMi			ctermfg=none ctermbg=none gui=italic term=italic cterm=italic
 hi				WOIMu			ctermfg=none ctermbg=none gui=underline term=underline cterm=underline
