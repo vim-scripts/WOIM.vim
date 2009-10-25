@@ -3,16 +3,13 @@
 " Author:		Geir Isene <geir@isene.com>
 " Web_site:		http://www.isene.com/
 " WOIM_def:		http://www.isene.com/artweb.cgi?article=012-woim.txt 
-" Version:		0.9.1
-" Modified:		2009-08-21
+" Version:		0.9.2
+" Modified:		2009-10-22
 "
 " Changes since previous mod:
-"	New_feature:	Added highlighting of item motions:
-"					<<		means "delete this item" (put at the end of a line)
-"					>>#1.1. means "move this item to after item 1.1."
-"					->		means "indent item right"
-"					<-<-	means "indent item two left"
-"					>>#1.-> means "move item to after item 1. and indent right"
+" Fix:			Included WOIMref as contained in WOIMtag, added
+"				single-quote and slash as allowed part of a WOIMtag
+" Fix:			A WOIMop after a WOIMmulti now displays correctly
 "
 " INSTRUCTIONS
 "
@@ -55,19 +52,19 @@ syn	match	WOIMident	 "\t[0-9.]\+\.\s"				contained
 syn match	WOIMmulti	"\t\* "							contained
 
 " WOIM operators
-syn	match	WOIMop		"\s[A-ZÆØÅ _]\{-1,}:"			contained contains=WOIMcomment
+syn	match	WOIMop		"[A-ZÆØÅ _/]\{-2,}:"			contained contains=WOIMcomment
 
 " Qualifiers are enclosed within [ ]
 syn	match	WOIMqual	"\[.*\]"						contained contains=WOIMtodo,WOIMref,WOIMcomment
 
 " Tags - anything that ends in a colon
-syn	match	WOIMtag '\s\{-}[a-zA-ZæøåÆØÅ0-9,._= \-+<>()#":]\{-1,}:\s' contained contains=WOIMtodo,WOIMop,WOIMcomment
+syn	match	WOIMtag '\s\{-}[a-zA-ZæøåÆØÅ0-9,._= \-\/+<>()#"':]\{-1,}:\s' contained contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref
 
 " Mark semicolon as stringing together lines
 syn match	WOIMsc		";"								contained
 
 " References start with a hash (#)
-syn	match	WOIMref	"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9.:/ _&-]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&-]\+\)" contained contains=WOIMcomment
+syn	match	WOIMref	"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9.:/ _&?%=-]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=-]\+\)" contained contains=WOIMcomment
 
 " Comments are enclosed within ( )
 syn	match	WOIMcomment	"(\_.\{-})"						contained contains=WOIMtodo,WOIMref
