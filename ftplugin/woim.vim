@@ -3,13 +3,15 @@
 " Author:		Geir Isene <geir@isene.com>
 " Web_site:		http://www.isene.com/
 " WOIM_def:		http://www.isene.com/artweb.cgi?article=012-woim.txt 
-" Version:		0.9.2
-" Modified:		2009-10-22
+" Version:		0.9.3
+" Modified:		2009-12-08
 "
 " Changes since previous mod:
-" Fix:			Included WOIMref as contained in WOIMtag, added
-"				single-quote and slash as allowed part of a WOIMtag
-" Fix:			A WOIMop after a WOIMmulti now displays correctly
+" Fix:  Christian Bryn <chr.bryn@gmail.com>:
+"       Added 'set noexpandtab' as this is a requirement for this plugin to
+"       work (i.e. needs to be set on a per file basis if not set here or in
+"       vimrc).
+" 
 "
 " INSTRUCTIONS
 "
@@ -40,6 +42,7 @@ let	b:current_syntax="WOIM"
 set	shiftwidth=2
 set	tabstop=2
 set	softtabstop=2
+set noexpandtab
 set	foldmethod=syntax
 set fillchars=fold:\ 
 syn sync fromstart
