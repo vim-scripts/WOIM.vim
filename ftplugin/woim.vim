@@ -1,21 +1,19 @@
 " Vim syntax and filetype plugin
 " Language:		Self defined markup for WOIM lists in Vim
 " Author:		Geir Isene <geir@isene.com>
-" Web_site:		http://www.isene.com/
-" WOIM_def:		http://www.isene.com/artweb.cgi?article=012-woim.txt 
-" Version:		0.9.3
-" Modified:		2009-12-08
+" Web_site:		http://isene.com/
+" WOIM_def:		http://isene.com/woim.pdf
+" Version:		0.9.6 - compatible with WOIM v. 1.2
+" Modified:		2010-12-03
 "
 " Changes since previous mod:
-" Fix:  Christian Bryn <chr.bryn@gmail.com>:
-"       Added 'set noexpandtab' as this is a requirement for this plugin to
-"       work (i.e. needs to be set on a per file basis if not set here or in
-"       vimrc).
+" Feature:			Added "*" as possible indentation
+" Fix:				Changed Multiline indicator from "*" to "+"
 " 
 "
 " INSTRUCTIONS
 "
-" Use only tabs/shifts for indentations
+" Use tabs/shifts or * for indentations
 "
 " Use <SPACE> to toggle one fold
 " Use \0 to \9, \a, \b, \c, \d, \e, \f to show up to 15 levels expanded
@@ -39,6 +37,7 @@ endif
 
 " Basics
 let	b:current_syntax="WOIM"
+set textwidth=0
 set	shiftwidth=2
 set	tabstop=2
 set	softtabstop=2
@@ -52,7 +51,7 @@ autocmd InsertLeave * :syntax sync fromstart
 syn	match	WOIMident	 "\t[0-9.]\+\.\s"				contained
 
 " Multi-line
-syn match	WOIMmulti	"\t\* "							contained
+syn match	WOIMmulti	"\t*+ "						contained
 
 " WOIM operators
 syn	match	WOIMop		"[A-ZÆØÅ _/]\{-2,}:"			contained contains=WOIMcomment
@@ -61,13 +60,13 @@ syn	match	WOIMop		"[A-ZÆØÅ _/]\{-2,}:"			contained contains=WOIMcomment
 syn	match	WOIMqual	"\[.*\]"						contained contains=WOIMtodo,WOIMref,WOIMcomment
 
 " Tags - anything that ends in a colon
-syn	match	WOIMtag '\s\{-}[a-zA-ZæøåÆØÅ0-9,._= \-\/+<>()#"':]\{-1,}:\s' contained contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref
+syn	match	WOIMtag '\s\{-}[a-zA-ZæøåÆØÅ0-9,._= \-\/+<>()#':]\{-1,}:\s' contained contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref
 
 " Mark semicolon as stringing together lines
 syn match	WOIMsc		";"								contained
 
 " References start with a hash (#)
-syn	match	WOIMref	"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9.:/ _&?%=-]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=-]\+\)" contained contains=WOIMcomment
+syn	match	WOIMref	"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9.:/ _&?%=-\*]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=-\*]\+\)" contained contains=WOIMcomment
 
 " Comments are enclosed within ( )
 syn	match	WOIMcomment	"(\_.\{-})"						contained contains=WOIMtodo,WOIMref
@@ -90,21 +89,21 @@ syn	match   WOIMu		" _.\{-}_ "						contained
 syn cluster WOIMtxt contains=WOIMident,WOIMmulti,WOIMop,WOIMqual,WOIMtag,WOIMref,WOIMcomment,WOIMquote,WOIMsc,WOIMtodo,WOIMmove,WOIMb,WOIMi,WOIMu
 
 " Levels
-syn region L15 start="^\t\{14} \=\S" end="^\(^\t\{15,} \=\S\)\@!" fold contained contains=@WOIMtxt
-syn region L14 start="^\t\{13} \=\S" end="^\(^\t\{14,} \=\S\)\@!" fold contained contains=@WOIMtxt,L15
-syn region L13 start="^\t\{12} \=\S" end="^\(^\t\{13,} \=\S\)\@!" fold contained contains=@WOIMtxt,L14,L15
-syn region L12 start="^\t\{11} \=\S" end="^\(^\t\{12,} \=\S\)\@!" fold contained contains=@WOIMtxt,L13,L14,L15
-syn region L11 start="^\t\{10} \=\S" end="^\(^\t\{11,} \=\S\)\@!" fold contained contains=@WOIMtxt,L12,L13,L14,L15
-syn region L10 start="^\t\{9} \=\S" end="^\(^\t\{10,} \=\S\)\@!" fold contained contains=@WOIMtxt,L11,L12,L13,L14,L15
-syn region L9 start="^\t\{8} \=\S" end="^\(^\t\{9,} \=\S\)\@!" fold contained contains=@WOIMtxt,L10,L11,L12,L13,L14,L15
-syn region L8 start="^\t\{7} \=\S" end="^\(^\t\{8,} \=\S\)\@!" fold contained contains=@WOIMtxt,L9,L10,L11,L12,L13,L14,L15
-syn region L7 start="^\t\{6} \=\S" end="^\(^\t\{7,} \=\S\)\@!" fold contained contains=@WOIMtxt,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L6 start="^\t\{5} \=\S" end="^\(^\t\{6,} \=\S\)\@!" fold contained contains=@WOIMtxt,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L5 start="^\t\{4} \=\S" end="^\(^\t\{5,} \=\S\)\@!" fold contained contains=@WOIMtxt,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L4 start="^\t\{3} \=\S" end="^\(^\t\{4,} \=\S\)\@!" fold contained contains=@WOIMtxt,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L3 start="^\t\{2} \=\S" end="^\(^\t\{3,} \=\S\)\@!" fold contained contains=@WOIMtxt,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L2 start="^\t\{1} \=\S" end="^\(^\t\{2,} \=\S\)\@!" fold contained contains=@WOIMtxt,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L1 start="^\S"       end="^\(^\t\{1,} \=\S\)\@!" fold           contains=@WOIMtxt,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L15 start="^\(\t\|\*\)\{14} \=\S" end="^\(^\(\t\|\*\)\{15,} \=\S\)\@!" fold contained contains=@WOIMtxt
+syn region L14 start="^\(\t\|\*\)\{13} \=\S" end="^\(^\(\t\|\*\)\{14,} \=\S\)\@!" fold contained contains=@WOIMtxt,L15
+syn region L13 start="^\(\t\|\*\)\{12} \=\S" end="^\(^\(\t\|\*\)\{13,} \=\S\)\@!" fold contained contains=@WOIMtxt,L14,L15
+syn region L12 start="^\(\t\|\*\)\{11} \=\S" end="^\(^\(\t\|\*\)\{12,} \=\S\)\@!" fold contained contains=@WOIMtxt,L13,L14,L15
+syn region L11 start="^\(\t\|\*\)\{10} \=\S" end="^\(^\(\t\|\*\)\{11,} \=\S\)\@!" fold contained contains=@WOIMtxt,L12,L13,L14,L15
+syn region L10 start="^\(\t\|\*\)\{9} \=\S" end="^\(^\(\t\|\*\)\{10,} \=\S\)\@!" fold contained contains=@WOIMtxt,L11,L12,L13,L14,L15
+syn region L9 start="^\(\t\|\*\)\{8} \=\S" end="^\(^\(\t\|\*\)\{9,} \=\S\)\@!" fold contained contains=@WOIMtxt,L10,L11,L12,L13,L14,L15
+syn region L8 start="^\(\t\|\*\)\{7} \=\S" end="^\(^\(\t\|\*\)\{8,} \=\S\)\@!" fold contained contains=@WOIMtxt,L9,L10,L11,L12,L13,L14,L15
+syn region L7 start="^\(\t\|\*\)\{6} \=\S" end="^\(^\(\t\|\*\)\{7,} \=\S\)\@!" fold contained contains=@WOIMtxt,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L6 start="^\(\t\|\*\)\{5} \=\S" end="^\(^\(\t\|\*\)\{6,} \=\S\)\@!" fold contained contains=@WOIMtxt,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L5 start="^\(\t\|\*\)\{4} \=\S" end="^\(^\(\t\|\*\)\{5,} \=\S\)\@!" fold contained contains=@WOIMtxt,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L4 start="^\(\t\|\*\)\{3} \=\S" end="^\(^\(\t\|\*\)\{4,} \=\S\)\@!" fold contained contains=@WOIMtxt,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L3 start="^\(\t\|\*\)\{2} \=\S" end="^\(^\(\t\|\*\)\{3,} \=\S\)\@!" fold contained contains=@WOIMtxt,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L2 start="^\(\t\|\*\)\{1} \=\S" end="^\(^\(\t\|\*\)\{2,} \=\S\)\@!" fold contained contains=@WOIMtxt,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L1 start="^\S"       end="^\(^\(\t\|\*\)\{1,} \=\S\)\@!" fold           contains=@WOIMtxt,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
 
 " Folds
 set foldtext=WOIMFoldText()
