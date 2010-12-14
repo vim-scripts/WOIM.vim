@@ -4,6 +4,24 @@ WOIM is a methodology to describe anything - any state, item(s), pattern, action
 
 This plugin does both highlighting and various automatic handling of WOIM lists, like collapsing lists or parts of lists in a sophisticated way.
 
-For information on WOIM, go to:
+For information on WOIM, read the WOIM description in full:
 
- http://www.isene.com/artweb.cgi?article=012-woim.txt
+ http://isene.com/woim.pdf
+
+INSTRUCTIONS
+
+Use tabs/shifts or * for indentations
+
+Use <SPACE> to toggle one fold
+Use \0 to \9, \a, \b, \c, \d, \e, \f to show up to 15 levels expanded
+
+Use <leader>s to remove underlining of States (prefixed with S:)
+Use <leader>S to add underlining of States (prefixed with S:)
+Use <leader>t to remove underlining of Transitions (prefixed with T:)
+Use <leader>T to add underlining of Transitions (prefixed with T:)
+
+Use <leader><SPACE> to go to the next open template element
+(A template element is a WOIM item ending in an equal sign)
+
+Syntax updated at start and every time you leave Insert mode
+
