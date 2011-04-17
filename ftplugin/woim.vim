@@ -3,19 +3,11 @@
 " Author:		Geir Isene <geir@isene.com>
 " Web_site:		http://isene.com/
 " WOIM_def:		http://isene.com/woim.pdf
-" Version:		0.9.8 - compatible with WOIM v. 1.2
+" Version:		0.9.9 - compatible with WOIM v. 1.3
 " Modified:		2010-12-14
 "
 " Changes since previous mod:
-" Feature:		States (S:) is underlined by default.
-"				<leader>s removes the underlining, while
-"				<leader>S turns on underlining of States.
-"				Transitions are not underlined by default.
-"				<leader>T turns on underlining, while
-"				<leader>t removes the underlining of Transitions.
-" Fix:			Removed unnecessary "contained" to make lists syntax
-"				marked even within stub lists.
-" Fix:			Small fixes in grouping and containing of elements.
+" Fix:			Fixed interference between Operators and Tags.
 " 
 "
 " INSTRUCTIONS
@@ -65,20 +57,20 @@ syn	match	WOIMident	 "\(\t\|\*\)*[0-9.]\+\.\s"
 " Multi-line
 syn match	WOIMmulti	"^\(\t\|\*\)*+ "
 
-" WOIM operators
-syn	match	WOIMop		"[A-ZÆØÅ_/]\{-2,}:" contains=WOIMcomment
-
 " Qualifiers are enclosed within [ ]
 syn	match	WOIMqual	"\[.*\]" contains=WOIMtodo,WOIMref,WOIMcomment
 
 " Tags - anything that ends in a colon
-syn	match	WOIMtag '\(\s\|\*\)\@<=[a-zA-ZæøåÆØÅ0-9,._= \-\/+<>()#']\{-2,}:\s' contains=WOIMident,WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMstate,WOIMtrans
+syn	match	WOIMtag		'\(\s\|\*\)\@<=[a-zA-ZæøåÆØÅ0-9,._&?%= \-\/+<>#']\{-2,}:\s' contains=WOIMtodo,WOIMcomment,WOIMquote,WOIMref
+
+" WOIM operators
+syn	match	WOIMop		"\s[A-ZÆØÅ_/]\{-2,}:\s" contains=WOIMcomment,WOIMquote
 
 " Mark semicolon as stringing together lines
 syn match	WOIMsc		";"
 
 " References start with a hash (#)
-syn	match	WOIMref	"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9.:/ _&?%=-\*]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=-\*]\+\)" contains=WOIMcomment
+syn	match	WOIMref		"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9,.:/ _&?%=\-\*]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=\-\*]\+\)" contains=WOIMcomment
 
 " Comments are enclosed within ( )
 syn	match	WOIMcomment	"(\_.\{-})" contains=WOIMtodo,WOIMref
