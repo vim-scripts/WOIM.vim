@@ -3,12 +3,13 @@
 " Author:		Geir Isene <geir@isene.com>
 " Web_site:		http://isene.com/
 " WOIM_def:		http://isene.com/woim.pdf
-" Version:		0.9.9 - compatible with WOIM v. 1.3
-" Modified:		2010-12-14
+" Version:		1.4 - compatible with WOIM v. 1.4
+" Modified:		2011-05-22
 "
 " Changes since previous mod:
-" Fix:			Fixed interference between Operators and Tags.
-" 
+" Feature:		Added the option of checkboxes for items
+"				Thanks to Christopher Truett (VIM script #3584)
+" Fix:			Made WOIMqual non-greedy
 "
 " INSTRUCTIONS
 "
@@ -21,6 +22,9 @@
 " Use <leader>S to add underlining of States (prefixed with S:)
 " Use <leader>t to remove underlining of Transitions (prefixed with T:)
 " Use <leader>T to add underlining of Transitions (prefixed with T:)
+"
+" Use <leader>v to add a checkbox at start of item or to toggle a checkbox
+" Use <leader>V to add/toggle a checkbox with a date stamp for completion
 "
 " Use <leader><SPACE> to go to the next open template element
 " (A template element is a WOIM item ending in an equal sign)
@@ -55,10 +59,10 @@ autocmd InsertLeave * :syntax sync fromstart
 syn	match	WOIMident	 "\(\t\|\*\)*[0-9.]\+\.\s"
 
 " Multi-line
-syn match	WOIMmulti	"^\(\t\|\*\)*+ "
+syn match	WOIMmulti	"^\(\t\|\*\)*+"
 
 " Qualifiers are enclosed within [ ]
-syn	match	WOIMqual	"\[.*\]" contains=WOIMtodo,WOIMref,WOIMcomment
+syn	match	WOIMqual	"\[.\{-}\]" contains=WOIMtodo,WOIMref,WOIMcomment
 
 " Tags - anything that ends in a colon
 syn	match	WOIMtag		'\(\s\|\*\)\@<=[a-zA-ZæøåÆØÅ0-9,._&?%= \-\/+<>#']\{-2,}:\s' contains=WOIMtodo,WOIMcomment,WOIMquote,WOIMref
@@ -126,6 +130,24 @@ function! WOIMFoldText()
   return line
 endfunction
 
+" Checkbox and timestamp
+function! CheckItem (stamp)
+  let current_line = getline('.')
+  if match(current_line,'\V[_]') >= 0
+    let time = strftime("%Y-%m-%d %H.%M")
+    exe 's/\V[_]/[x]/'
+    if a:stamp == "stamped"
+      exe "normal 0f]a ".time.":"
+    endif
+  elseif match(current_line,'\V[x]') >= 0
+    exe 's/\V[x]/[_]/i'
+    exe 's/\V[_] \d\d\d\d-\d\d-\d\d \d\d\.\d\d:/[_]/e'
+  else
+    exe "normal ^i[_] "
+  endif
+endfunction
+
+
 " Highlighting and Linking :
 hi				Folded			ctermfg=yellow ctermbg=none
 hi				L1				gui=bold term=bold cterm=bold
@@ -172,6 +194,9 @@ map <leader>s	:hi link WOIMstate NONE<CR>
 map <leader>S	:hi link WOIMstate underlined<CR>
 map <leader>t	:hi link WOIMtrans NONE<CR>
 map <leader>T	:hi link WOIMtrans underlined<CR>
+
+map <leader>v	:call CheckItem("")<CR>
+map <leader>V	:call CheckItem("stamped")<CR>
 
 map <leader><SPACE>	/=\s*$<CR>A
 

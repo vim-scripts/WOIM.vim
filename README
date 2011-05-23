@@ -1,6 +1,8 @@
 This is a mirror of http://www.vim.org/scripts/script.php?script_id=2518
 
-WOIM is a methodology to describe anything - any state, item(s), pattern, action, process, transition, program, instruction set etc. So, you can use it as an outliner, a ToDo list handler, a process design tool, a data modeler, or any other way you want to describe something.
+It's an Outliner, a TODO-list solution, a project management tool, a Business Process Management aid, a data modeler, a Use Case facilitator, a way to describe the human DNA or the history of the universe ;)
+
+WOIM is a methodology to describe anything - any state, item(s), pattern, action, process, transition, program, instruction set etc.
 
 This plugin does both highlighting and various automatic handling of WOIM lists, like collapsing lists or parts of lists in a sophisticated way.
 
@@ -19,6 +21,11 @@ Use <leader>s to remove underlining of States (prefixed with S:)
 Use <leader>S to add underlining of States (prefixed with S:)
 Use <leader>t to remove underlining of Transitions (prefixed with T:)
 Use <leader>T to add underlining of Transitions (prefixed with T:)
+
+Use <leader>v to add a checkbox at start of item or to toggle a checkbox
+Use <leader>V to add/toggle a checkbox with a date stamp for completion
+
+Use "gr" (without the quotation marks, signifies "Goto Ref") while the cursor is on a WOIM reference to jump to that destination in a WOIM list. Use "n" after a "gr" to verify that the reference destination is unique.
 
 Use <leader><SPACE> to go to the next open template element
 (A template element is a WOIM item ending in an equal sign)
