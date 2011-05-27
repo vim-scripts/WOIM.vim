@@ -3,13 +3,13 @@
 " Author:		Geir Isene <geir@isene.com>
 " Web_site:		http://isene.com/
 " WOIM_def:		http://isene.com/woim.pdf
-" Version:		1.4 - compatible with WOIM v. 1.4
-" Modified:		2011-05-22
+" Version:		1.4.1 - compatible with WOIM v. 1.4
+" Modified:		2011-05-27
 "
 " Changes since previous mod:
-" Feature:		Added the option of checkboxes for items
-"				Thanks to Christopher Truett (VIM script #3584)
-" Fix:			Made WOIMqual non-greedy
+" Feature:		Goto Reference: With the cursor at a WOIM reference, press
+"				"gr" to jump to that reference in the WOIM list
+"
 "
 " INSTRUCTIONS
 "
@@ -147,6 +147,14 @@ function! CheckItem (stamp)
   endif
 endfunction
 
+" Goto reference
+function! GotoRef()
+  let ref_word = expand("<cWORD>")
+  let ref_word = substitute(ref_word, '#', '', 'g')
+  let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
+  call search(ref_dest)
+endfunction
+
 
 " Highlighting and Linking :
 hi				Folded			ctermfg=yellow ctermbg=none
@@ -197,6 +205,8 @@ map <leader>T	:hi link WOIMtrans underlined<CR>
 
 map <leader>v	:call CheckItem("")<CR>
 map <leader>V	:call CheckItem("stamped")<CR>
+
+map gr			:call GotoRef()<CR>
 
 map <leader><SPACE>	/=\s*$<CR>A
 
