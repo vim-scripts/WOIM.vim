@@ -3,13 +3,14 @@
 " Author:		Geir Isene <geir@isene.com>
 " Web_site:		http://isene.com/
 " WOIM_def:		http://isene.com/woim.pdf
-" Version:		1.4.1 - compatible with WOIM v. 1.4
-" Modified:		2011-05-27
+" Version:		1.4.2 - compatible with WOIM v. 1.4
+" Modified:		2011-05-29
 "
 " Changes since previous mod:
-" Feature:		Goto Reference: With the cursor at a WOIM reference, press
-"				"gr" to jump to that reference in the WOIM list
-"
+" Fix:			Fixed "gr" (Goto Ref) for references with single quotes ('')
+"				Added the search pattern from "gr" to the search register
+"				("/) so that "n" can successively be used to test if the
+"				referenced destination is unique (which it should be).
 "
 " INSTRUCTIONS
 "
@@ -151,7 +152,9 @@ endfunction
 function! GotoRef()
   let ref_word = expand("<cWORD>")
   let ref_word = substitute(ref_word, '#', '', 'g')
+  let ref_word = substitute(ref_word, "\'", '', 'g')
   let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
+  let @/ = ref_dest
   call search(ref_dest)
 endfunction
 
