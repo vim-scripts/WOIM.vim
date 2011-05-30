@@ -3,14 +3,23 @@
 " Author:		Geir Isene <geir@isene.com>
 " Web_site:		http://isene.com/
 " WOIM_def:		http://isene.com/woim.pdf
-" Version:		1.4.2 - compatible with WOIM v. 1.4
-" Modified:		2011-05-29
+" License:		I release all copyright claims. 
+"				This code is in the public domain.
+"				Permission is granted to use, copy modify, distribute, and
+"				sell this software for any purpose. I make no guarantee
+"				about the suitability of this software for any purpose and
+"				I am not liable for any damages resulting from its use.
+"				Further, I am under no obligation to maintain or extend
+"				this software. It is provided on an 'as is' basis without
+"				any expressed or implied warranty.
+" Version:		1.4.5 - compatible with WOIM v. 1.4
+" Modified:		2011-05-30
 "
 " Changes since previous mod:
-" Fix:			Fixed "gr" (Goto Ref) for references with single quotes ('')
-"				Added the search pattern from "gr" to the search register
-"				("/) so that "n" can successively be used to test if the
-"				referenced destination is unique (which it should be).
+" Overhaul:		Created the documentation, includin the whole WOIM
+"				definition to make it easily accessible within VIM.
+"				Added the INSTALL and README files, zipped and ready for
+"				easy installation.
 "
 " INSTRUCTIONS
 "

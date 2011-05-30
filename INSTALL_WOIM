@@ -1,0 +1,34 @@
+== Install instructions for the VIM plugin for WOIM ==
+
+Unzip the file woim.zip into you VIM directory.
+
+The files INSTALL_WOIM and README_WOIM will appear in the VIM directory,
+while the documentation will be placed in the "doc" subdirectory and most
+importantly, the WOIM pluging will be placed in teh "syntax" subdirectory.
+
+Add to your .vimrc file or create a file named "woim.vim" with the
+following and drop that file in the "ftdetect" directory:
+
+  au BufRead,BufNewFile *.woim set filetype=woim
+
+To use WOIM lists within other file types (other than ".woim"), add the
+following to those syntax files:
+
+  syn include @WOIM ~/.vim/syntax/woim.vim
+  syn region WoimSnip matchgroup=Snip start="WOIMstart" end="WOIMend" contains=@WOIM
+  hi link Snip SpecialComment
+
+
+The documentation file contains all of the WOIM definition as found here:
+
+  http://isene.com/woim.pdf
+
+
+LICENSE
+I release all copyright claims. This code is in the public domain.
+Permission is granted to use, copy modify, distribute, and sell this
+software for any purpose. I make no guarantee about the suitability of
+this software for any purpose and I am not liable for any damages
+resulting from its use. Further, I am under no obligation to maintain or
+extend this software. It is provided on an 'as is' basis without any
+expressed or implied warranty.
