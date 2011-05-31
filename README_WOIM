@@ -38,15 +38,7 @@ Syntax updated at start and every time you leave Insert mode
 
 For this help and more, including the full WOIM definition/description, type 
 
-  :help woim
+  :help WOIM
 
-
-LICENSE
-I release all copyright claims. This code is in the public domain.
-Permission is granted to use, copy modify, distribute, and sell this
-software for any purpose. I make no guarantee about the suitability of
-this software for any purpose and I am not liable for any damages
-resulting from its use. Further, I am under no obligation to maintain or
-extend this software. It is provided on an 'as is' basis without any
-expressed or implied warranty.
-
+If you use tab completion after the "WOIM", you will find all the help
+tags in the documentation.

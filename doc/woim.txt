@@ -641,12 +641,22 @@ itself; Geir Isene. More at http//isene.com
 ==============================================================================
 5. Changelog                                                  *WOIM-Changelog*
 
+VERSION 1.4.6		2011-05-31
+
+  Perfection:
+	Minor fixes due to a bout of perfectionism.
+
 VERSION 1.4.5		2011-05-30
 
 	Overhaul:
-	Created the documentation, includin the whole WOIM definition to make it
-	easily accessible within VIM.  Added the INSTALL and README files, zipped and
-	ready for easy installation.
+	Created the documentation, including the whole WOIM definition to make it
+	easily accessible within VIM. Added the INSTALL and README files.
+	
+	Created a Vimball file ("woim.vba") for easy install. Simply do:
+
+	vim woim.vba
+	:so %
+	:q
 
 VERSION 1.4.2   2011-05-29
 

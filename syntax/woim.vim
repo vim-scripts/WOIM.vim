@@ -12,14 +12,11 @@
 "				Further, I am under no obligation to maintain or extend
 "				this software. It is provided on an 'as is' basis without
 "				any expressed or implied warranty.
-" Version:		1.4.5 - compatible with WOIM v. 1.4
-" Modified:		2011-05-30
+" Version:		1.4.6 - compatible with WOIM v. 1.4
+" Modified:		2011-05-31
 "
 " Changes since previous mod:
-" Overhaul:		Created the documentation, includin the whole WOIM
-"				definition to make it easily accessible within VIM.
-"				Added the INSTALL and README files, zipped and ready for
-"				easy installation.
+" Perfection:	Minor fixes due to a bout of perfectionism.	
 "
 " INSTRUCTIONS
 "
@@ -127,7 +124,7 @@ syn region L3 start="^\(\t\|\*\)\{2} \=\S"   end="^\(^\(\t\|\*\)\{3,} \=\S\)\@!"
 syn region L2 start="^\(\t\|\*\)\{1} \=\S"   end="^\(^\(\t\|\*\)\{2,} \=\S\)\@!"  fold contains=@WOIMtxt,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
 syn region L1 start="^\S"                    end="^\(^\(\t\|\*\)\{1,} \=\S\)\@!"  fold contains=@WOIMtxt,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
 
-" Folds
+" Folds - mapped to <SPACE> and <leader>0 - <leader>f
 set foldtext=WOIMFoldText()
 function! WOIMFoldText()
   let line = getline(v:foldstart)
@@ -140,7 +137,7 @@ function! WOIMFoldText()
   return line
 endfunction
 
-" Checkbox and timestamp
+" Checkbox and timestamp - mapped to <leader>v and <leader>V
 function! CheckItem (stamp)
   let current_line = getline('.')
   if match(current_line,'\V[_]') >= 0
@@ -157,7 +154,7 @@ function! CheckItem (stamp)
   endif
 endfunction
 
-" Goto reference
+" Goto reference - mapped to 'gr'
 function! GotoRef()
   let ref_word = expand("<cWORD>")
   let ref_word = substitute(ref_word, '#', '', 'g')
@@ -187,7 +184,7 @@ hi				WOIMi			ctermfg=none ctermbg=none gui=italic term=italic cterm=italic
 hi link			WOIMu			underlined
 hi link			WOIMstate		underlined
 
-" VIM parameters
+" VIM parameters (VIM tag line)
 syn	match		WOIMvim			"^vim:.*"
 hi def link		WOIMvim			Function
 
