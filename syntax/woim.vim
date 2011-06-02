@@ -1,24 +1,30 @@
 " Vim syntax and filetype plugin for WOIM files (.woim)
-" Language:		Self defined markup for WOIM lists in Vim
-" Author:		Geir Isene <geir@isene.com>
-" Web_site:		http://isene.com/
-" WOIM_def:		http://isene.com/woim.pdf
-" License:		I release all copyright claims. 
-"				This code is in the public domain.
-"				Permission is granted to use, copy modify, distribute, and
-"				sell this software for any purpose. I make no guarantee
-"				about the suitability of this software for any purpose and
-"				I am not liable for any damages resulting from its use.
-"				Further, I am under no obligation to maintain or extend
-"				this software. It is provided on an 'as is' basis without
-"				any expressed or implied warranty.
-" Version:		1.4.6 - compatible with WOIM v. 1.4
-" Modified:		2011-05-31
+" Language:	Self defined markup and functions for WOIM lists in Vim
+" Author:	Geir Isene <g@isene.com>
+" Web_site:	http://isene.com/
+" WOIM_def:	http://isene.com/woim.pdf
+" License:	I release all copyright claims. 
+"		This code is in the public domain.
+"		Permission is granted to use, copy modify, distribute, and
+"		sell this software for any purpose. I make no guarantee
+"		about the suitability of this software for any purpose and
+"		I am not liable for any damages resulting from its use.
+"		Further, I am under no obligation to maintain or extend
+"		this software. It is provided on an 'as is' basis without
+"		any expressed or implied warranty.
+" Version:	1.4.7 - compatible with WOIM v. 1.4
+" Modified:	2011-06-02
 "
-" Changes since previous mod:
-" Perfection:	Minor fixes due to a bout of perfectionism.	
+" Changes since previous version:
+"   Modified the GotoRef function (fixed a bug and included feed back)
+"   Better syntax highlighting for folding in gvim
+"   Updating the README_WOIM and documentation files + other cosmetic changes
+"   Added the possibility of disabling/overriding the WOIM plugin key mapping
+"   Added an ftdetect file into woim.vba
+"   (Thanks to Sergey Khorev for the last two improvements)
 "
-" INSTRUCTIONS
+"
+" INSTRUCTIONS {{{1
 "
 " Use tabs/shifts or * for indentations
 "
@@ -39,92 +45,29 @@
 " Syntax updated at start and every time you leave Insert mode
 
 
-" Initializing
-if exists("b:current_syntax")
-  finish
-endif
-
+" Initializing {{{1
 if version < 600
-  syntax clear
+    syntax clear
 elseif exists("b:current_syntax")
-  finish
+    finish
 endif
 
-" Basics
-let	b:current_syntax="WOIM"
+" Basic settings {{{1
+let b:current_syntax="WOIM"
 set textwidth=0
-set	shiftwidth=2
-set	tabstop=2
-set	softtabstop=2
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
 set noexpandtab
-set	foldmethod=syntax
+set foldmethod=syntax
 set fillchars=fold:\ 
 syn sync fromstart
 autocmd InsertLeave * :syntax sync fromstart
 
-" Identifier (any number in front)
-syn	match	WOIMident	 "\(\t\|\*\)*[0-9.]\+\.\s"
+" Functions {{{1
 
-" Multi-line
-syn match	WOIMmulti	"^\(\t\|\*\)*+"
-
-" Qualifiers are enclosed within [ ]
-syn	match	WOIMqual	"\[.\{-}\]" contains=WOIMtodo,WOIMref,WOIMcomment
-
-" Tags - anything that ends in a colon
-syn	match	WOIMtag		'\(\s\|\*\)\@<=[a-zA-ZæøåÆØÅ0-9,._&?%= \-\/+<>#']\{-2,}:\s' contains=WOIMtodo,WOIMcomment,WOIMquote,WOIMref
-
-" WOIM operators
-syn	match	WOIMop		"\s[A-ZÆØÅ_/]\{-2,}:\s" contains=WOIMcomment,WOIMquote
-
-" Mark semicolon as stringing together lines
-syn match	WOIMsc		";"
-
-" References start with a hash (#)
-syn	match	WOIMref		"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9,.:/ _&?%=\-\*]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=\-\*]\+\)" contains=WOIMcomment
-
-" Comments are enclosed within ( )
-syn	match	WOIMcomment	"(\_.\{-})" contains=WOIMtodo,WOIMref
-
-" Text in quotation marks
-syn	match	WOIMquote	'"\_.\{-}"' contains=WOIMtodo,WOIMref
-
-" TODO  or FIXME
-syn	keyword WOIMtodo	TODO FIXME						
-
-" Item motion
-syn match	WOIMmove	">>\|<<\|->\|<-"
-
-" Bold and Italic
-syn	match   WOIMb		" \@<=\*.\{-}\* "
-syn	match   WOIMi		" \@<=/.\{-}/ "
-syn	match   WOIMu		" \@<=_.\{-}_ "
-
-" State & Transitions
-syn match	WOIMstate	"\([.* \t]S: \)\@<=[^;]*" contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMqual,WOIMsc,WOIMmove,WOIMtag,WOIMquote
-syn match	WOIMtrans	"\([.* \t]T: \)\@<=[^;]*" contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMqual,WOIMsc,WOIMmove,WOIMtag,WOIMquote
-
-" Cluster the above
-syn cluster WOIMtxt contains=WOIMident,WOIMmulti,WOIMop,WOIMqual,WOIMtag,WOIMref,WOIMcomment,WOIMquote,WOIMsc,WOIMtodo,WOIMmove,WOIMb,WOIMi,WOIMu,WOIMstate,WOIMtrans
-
-" Levels
-syn region L15 start="^\(\t\|\*\)\{14} \=\S" end="^\(^\(\t\|\*\)\{15,} \=\S\)\@!" fold contains=@WOIMtxt
-syn region L14 start="^\(\t\|\*\)\{13} \=\S" end="^\(^\(\t\|\*\)\{14,} \=\S\)\@!" fold contains=@WOIMtxt,L15
-syn region L13 start="^\(\t\|\*\)\{12} \=\S" end="^\(^\(\t\|\*\)\{13,} \=\S\)\@!" fold contains=@WOIMtxt,L14,L15
-syn region L12 start="^\(\t\|\*\)\{11} \=\S" end="^\(^\(\t\|\*\)\{12,} \=\S\)\@!" fold contains=@WOIMtxt,L13,L14,L15
-syn region L11 start="^\(\t\|\*\)\{10} \=\S" end="^\(^\(\t\|\*\)\{11,} \=\S\)\@!" fold contains=@WOIMtxt,L12,L13,L14,L15
-syn region L10 start="^\(\t\|\*\)\{9} \=\S"  end="^\(^\(\t\|\*\)\{10,} \=\S\)\@!" fold contains=@WOIMtxt,L11,L12,L13,L14,L15
-syn region L9 start="^\(\t\|\*\)\{8} \=\S"   end="^\(^\(\t\|\*\)\{9,} \=\S\)\@!"  fold contains=@WOIMtxt,L10,L11,L12,L13,L14,L15
-syn region L8 start="^\(\t\|\*\)\{7} \=\S"   end="^\(^\(\t\|\*\)\{8,} \=\S\)\@!"  fold contains=@WOIMtxt,L9,L10,L11,L12,L13,L14,L15
-syn region L7 start="^\(\t\|\*\)\{6} \=\S"   end="^\(^\(\t\|\*\)\{7,} \=\S\)\@!"  fold contains=@WOIMtxt,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L6 start="^\(\t\|\*\)\{5} \=\S"   end="^\(^\(\t\|\*\)\{6,} \=\S\)\@!"  fold contains=@WOIMtxt,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L5 start="^\(\t\|\*\)\{4} \=\S"   end="^\(^\(\t\|\*\)\{5,} \=\S\)\@!"  fold contains=@WOIMtxt,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L4 start="^\(\t\|\*\)\{3} \=\S"   end="^\(^\(\t\|\*\)\{4,} \=\S\)\@!"  fold contains=@WOIMtxt,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L3 start="^\(\t\|\*\)\{2} \=\S"   end="^\(^\(\t\|\*\)\{3,} \=\S\)\@!"  fold contains=@WOIMtxt,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L2 start="^\(\t\|\*\)\{1} \=\S"   end="^\(^\(\t\|\*\)\{2,} \=\S\)\@!"  fold contains=@WOIMtxt,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-syn region L1 start="^\S"                    end="^\(^\(\t\|\*\)\{1,} \=\S\)\@!"  fold contains=@WOIMtxt,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
-
-" Folds - mapped to <SPACE> and <leader>0 - <leader>f
+" Folding {{{2
+" Mapped to <SPACE> and <leader>0 - <leader>f
 set foldtext=WOIMFoldText()
 function! WOIMFoldText()
   let line = getline(v:foldstart)
@@ -137,7 +80,8 @@ function! WOIMFoldText()
   return line
 endfunction
 
-" Checkbox and timestamp - mapped to <leader>v and <leader>V
+" Checkbox and timestamp {{{2
+" Mapped to <leader>v and <leader>V
 function! CheckItem (stamp)
   let current_line = getline('.')
   if match(current_line,'\V[_]') >= 0
@@ -154,41 +98,132 @@ function! CheckItem (stamp)
   endif
 endfunction
 
-" Goto reference - mapped to 'gr'
+" Goto reference {{{2
+" Mapped to 'gr'
 function! GotoRef()
-  let ref_word = expand("<cWORD>")
-  let ref_word = substitute(ref_word, '#', '', 'g')
-  let ref_word = substitute(ref_word, "\'", '', 'g')
-  let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
-  let @/ = ref_dest
-  call search(ref_dest)
+  let current_line = getline('.')
+  if match(current_line,'#') >= 0
+    if match(current_line,"#\'") >= 0
+      let ref_word = matchstr(current_line,"#\'.*\'")
+	  let ref_word = substitute(ref_word, "\'", '', 'g')
+      let ref_word = substitute(ref_word, '#', '', 'g')
+      let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
+	  let ref_dest = "\\\(#\\\'\\\)\\\@<!" . ref_dest
+	else
+      if match(current_line,"#.* ") >= 0
+        let ref_word = matchstr(current_line,"#.* ")
+	  else
+        let ref_word = matchstr(current_line,"#.*$")
+	  endif
+      let ref_word = substitute(ref_word, '#', '', 'g')
+      let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
+	  let ref_dest = "#\\\@<!" . ref_dest
+	endif
+    let @/ = ref_dest
+	call search(ref_dest)
+    let new_line = getline('.')
+    if new_line == current_line
+	  echo "No destination"
+	endif
+  else
+    echo "No reference in the WOIM item"
+  endif
 endfunction
 
+" Syntax definitions {{{1
 
-" Highlighting and Linking :
-hi				Folded			ctermfg=yellow ctermbg=none
-hi				L1				gui=bold term=bold cterm=bold
-hi def link		WOIMident		Define
-hi def link		WOIMmulti		String
-hi def link		WOIMop			Function
-hi def link		WOIMqual		Type
-hi def link		WOIMtag			String
-hi def link		WOIMref			Define
-hi def link		WOIMcomment		Comment
-hi def link		WOIMquote		Comment
-hi def link		WOIMsc			Type
-hi def link		WOIMtodo		Todo
-hi def link		WOIMmove		Error
-hi				WOIMb			ctermfg=none ctermbg=none gui=bold term=bold cterm=bold
-hi				WOIMi			ctermfg=none ctermbg=none gui=italic term=italic cterm=italic
-hi link			WOIMu			underlined
-hi link			WOIMstate		underlined
+" WOIM elements {{{2
+" Identifier (any number in front)
+syn match   WOIMident   "\(\t\|\*\)*[0-9.]\+\.\s"
 
-" VIM parameters (VIM tag line)
-syn	match		WOIMvim			"^vim:.*"
-hi def link		WOIMvim			Function
+" Multi-line
+syn match   WOIMmulti   "^\(\t\|\*\)*+"
 
-" macros
+" Qualifiers are enclosed within [ ]
+syn match   WOIMqual    "\[.\{-}\]" contains=WOIMtodo,WOIMref,WOIMcomment
+
+" Tags - anything that ends in a colon
+syn match   WOIMtag	'\(\s\|\*\)\@<=[a-zA-ZæøåÆØÅ0-9,._&?%= \-\/+<>#']\{-2,}:\s' contains=WOIMtodo,WOIMcomment,WOIMquote,WOIMref
+
+" WOIM operators
+syn match   WOIMop	"\s[A-ZÆØÅ_/]\{-2,}:\s" contains=WOIMcomment,WOIMquote
+
+" Mark semicolon as stringing together lines
+syn match   WOIMsc	";"
+
+" References start with a hash (#)
+syn match   WOIMref	"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9,.:/ _&?%=\-\*]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=\-\*]\+\)" contains=WOIMcomment
+
+" Comments are enclosed within ( )
+syn match   WOIMcomment "(\_.\{-})" contains=WOIMtodo,WOIMref
+
+" Text in quotation marks
+syn match   WOIMquote   '"\_.\{-}"' contains=WOIMtodo,WOIMref
+
+" TODO  or FIXME
+syn keyword WOIMtodo    TODO FIXME						
+
+" Item motion
+syn match   WOIMmove    ">>\|<<\|->\|<-"
+
+" Bold and Italic
+syn match   WOIMb	" \@<=\*.\{-}\* "
+syn match   WOIMi	" \@<=/.\{-}/ "
+syn match   WOIMu	" \@<=_.\{-}_ "
+
+" State & Transitions
+syn match   WOIMstate	"\([.* \t]S: \)\@<=[^;]*" contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMqual,WOIMsc,WOIMmove,WOIMtag,WOIMquote
+syn match   WOIMtrans	"\([.* \t]T: \)\@<=[^;]*" contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMqual,WOIMsc,WOIMmove,WOIMtag,WOIMquote
+
+" Cluster the above
+syn cluster WOIMtxt contains=WOIMident,WOIMmulti,WOIMop,WOIMqual,WOIMtag,WOIMref,WOIMcomment,WOIMquote,WOIMsc,WOIMtodo,WOIMmove,WOIMb,WOIMi,WOIMu,WOIMstate,WOIMtrans
+
+" WOIM indentation (folding levels) {{{2
+syn region L15 start="^\(\t\|\*\)\{14} \=\S" end="^\(^\(\t\|\*\)\{15,} \=\S\)\@!" fold contains=@WOIMtxt
+syn region L14 start="^\(\t\|\*\)\{13} \=\S" end="^\(^\(\t\|\*\)\{14,} \=\S\)\@!" fold contains=@WOIMtxt,L15
+syn region L13 start="^\(\t\|\*\)\{12} \=\S" end="^\(^\(\t\|\*\)\{13,} \=\S\)\@!" fold contains=@WOIMtxt,L14,L15
+syn region L12 start="^\(\t\|\*\)\{11} \=\S" end="^\(^\(\t\|\*\)\{12,} \=\S\)\@!" fold contains=@WOIMtxt,L13,L14,L15
+syn region L11 start="^\(\t\|\*\)\{10} \=\S" end="^\(^\(\t\|\*\)\{11,} \=\S\)\@!" fold contains=@WOIMtxt,L12,L13,L14,L15
+syn region L10 start="^\(\t\|\*\)\{9} \=\S"  end="^\(^\(\t\|\*\)\{10,} \=\S\)\@!" fold contains=@WOIMtxt,L11,L12,L13,L14,L15
+syn region L9 start="^\(\t\|\*\)\{8} \=\S"   end="^\(^\(\t\|\*\)\{9,} \=\S\)\@!"  fold contains=@WOIMtxt,L10,L11,L12,L13,L14,L15
+syn region L8 start="^\(\t\|\*\)\{7} \=\S"   end="^\(^\(\t\|\*\)\{8,} \=\S\)\@!"  fold contains=@WOIMtxt,L9,L10,L11,L12,L13,L14,L15
+syn region L7 start="^\(\t\|\*\)\{6} \=\S"   end="^\(^\(\t\|\*\)\{7,} \=\S\)\@!"  fold contains=@WOIMtxt,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L6 start="^\(\t\|\*\)\{5} \=\S"   end="^\(^\(\t\|\*\)\{6,} \=\S\)\@!"  fold contains=@WOIMtxt,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L5 start="^\(\t\|\*\)\{4} \=\S"   end="^\(^\(\t\|\*\)\{5,} \=\S\)\@!"  fold contains=@WOIMtxt,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L4 start="^\(\t\|\*\)\{3} \=\S"   end="^\(^\(\t\|\*\)\{4,} \=\S\)\@!"  fold contains=@WOIMtxt,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L3 start="^\(\t\|\*\)\{2} \=\S"   end="^\(^\(\t\|\*\)\{3,} \=\S\)\@!"  fold contains=@WOIMtxt,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L2 start="^\(\t\|\*\)\{1} \=\S"   end="^\(^\(\t\|\*\)\{2,} \=\S\)\@!"  fold contains=@WOIMtxt,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+syn region L1 start="^\S"                    end="^\(^\(\t\|\*\)\{1,} \=\S\)\@!"  fold contains=@WOIMtxt,L2,L3,L4,L5,L6,L7,L8,L9,L10,L11,L12,L13,L14,L15
+
+" VIM parameters (VIM modeline) {{{2
+syn match   WOIMvim "^vim:.*"
+
+" Highlighting and Linking {{{1
+hi	    Folded	ctermfg=yellow ctermbg=none guibg=NONE guifg=darkyellow gui=bold
+hi	    L1		gui=bold term=bold cterm=bold
+hi def link WOIMident	Define
+hi def link WOIMmulti	String
+hi def link WOIMop	Function
+hi def link WOIMqual	Type
+hi def link WOIMtag	String
+hi def link WOIMref	Define
+hi def link WOIMcomment	Comment
+hi def link WOIMquote	Comment
+hi def link WOIMsc	Type
+hi def link WOIMtodo	Todo
+hi def link WOIMmove	Error
+hi	    WOIMb	ctermfg=none ctermbg=none gui=bold term=bold cterm=bold
+hi	    WOIMi	ctermfg=none ctermbg=none gui=italic term=italic cterm=italic
+hi link	    WOIMu	underlined
+hi link	    WOIMstate	underlined
+hi def link WOIMvim     Function
+
+" Keymap {{{1
+
+if exists('g:WoimDisableMapping') && g:WoimDisableMapping
+    finish
+endif
+
 map <leader>0	:set foldlevel=0<CR>
 map <leader>1	:set foldlevel=1<CR>
 map <leader>2	:set foldlevel=2<CR>
@@ -219,4 +254,5 @@ map gr			:call GotoRef()<CR>
 
 map <leader><SPACE>	/=\s*$<CR>A
 
-" vim: ts=4
+" vim modeline {{{1
+" vim: sw=4 sts=4 et fdm=marker fillchars=fold\:\ :

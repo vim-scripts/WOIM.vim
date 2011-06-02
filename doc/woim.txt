@@ -5,7 +5,7 @@ action, process, transition, program, instruction set etc. So, you can use
 it as an outliner, a ToDo list handler, a process design tool, a data
 modeler, or any other way you want to describe something.
 
-For information on WOIM, read the WOIM description in full:
+This documentation contains the full WOIM definition and is also found here:
 
   http://isene.com/woim.pdf
 
@@ -47,26 +47,46 @@ lists, like collapsing lists or parts of lists in a sophisticated way.
 ==============================================================================
 2. Plugin Functionality                            *WOIM-Plugin-functionality*
 
-Use tabs/shifts or * for indentations
+The WOIM plugin for VIM consists of the main file put in the "syntax"
+subdirectory.  It also includes a file in the "ftdetect" directory so that
+files with a ".woim" extension is automatically detected and treated as a WOIM
+file.
 
-Use <SPACE> to toggle one fold
-Use \0 to \9, \a, \b, \c, \d, \e, \f to show up to 15 levels expanded
+To use WOIM lists within other file types (other than ".woim"), add the
+following to those syntax files:
 
-Use <leader>s to remove underlining of States (prefixed with S:)
-Use <leader>S to add underlining of States (prefixed with S:)
-Use <leader>t to remove underlining of Transitions (prefixed with T:)
-Use <leader>T to add underlining of Transitions (prefixed with T:)
+  syn include @WOIM ~/.vim/syntax/woim.vim
+  syn region WoimSnip matchgroup=Snip start="WOIMstart" end="WOIMend" contains=@WOIM
+  hi link Snip SpecialComment
 
-Use <leader>v to add a checkbox at start of item or to toggle a checkbox
-Use <leader>V to add/toggle a checkbox with a date stamp for completion
+When working wiht WOIM lists in VIM:
 
-Use "gr" (without the quotation marks, signifies "Goto Ref") while the
-cursor is on a WOIM reference to jump to that destination in a WOIM list
+	Use tabs/shifts or * for indentations
 
-Use <leader><SPACE> to go to the next open template element
-(A template element is a WOIM item ending in an equal sign)
+	Use <SPACE> to toggle one fold
+	Use \0 to \9, \a, \b, \c, \d, \e, \f to show up to 15 levels expanded
+
+	Use <leader>s to remove underlining of States (prefixed with S:)
+	Use <leader>S to add underlining of States (prefixed with S:)
+	Use <leader>t to remove underlining of Transitions (prefixed with T:)
+	Use <leader>T to add underlining of Transitions (prefixed with T:)
+
+	Use <leader>v to add a checkbox at start of item or to toggle a checkbox
+	Use <leader>V to add/toggle a checkbox with a date stamp for completion
+
+	Use "gr" (without the quotation marks, signifies "Goto Ref") while the
+	cursor is on a WOIM reference to jump to that destination in a WOIM list
+
+	Use <leader><SPACE> to go to the next open template element
+	(A template element is a WOIM item ending in an equal sign)
 
 Syntax updated at start and every time you leave Insert mode 
+
+If you want to disable or override these keymaps with your own, simply add
+
+  let g:WoimDisableMapping = 1
+
+to your .vimrc file.
 
 ==============================================================================
 3. WOIM Definition                                           *WOIM-Definition*
@@ -640,6 +660,16 @@ itself; Geir Isene. More at http//isene.com
 
 ==============================================================================
 5. Changelog                                                  *WOIM-Changelog*
+
+VERSION 1.4.7		2011-06-02
+
+  Changes:
+	Modified the GotoRef function (fixed a bug and included feed back)
+	Better syntax highlighting for folding in gvim
+	Updating the README_WOIM and documentation files + other cosmetic changes
+	Added the possibility of disabling/overriding the WOIM plugin key mapping
+	Added an ftdetect file into woim.vba
+	(Thanks to Sergey Khorev for the last two improvements)
 
 VERSION 1.4.6		2011-05-31
 

@@ -1,4 +1,4 @@
-== General instructions for the VIM plugin for WOIM ==
+GENERAL INFORAMTION ABOUT THE VIM PLUGIN FOR WOIM
 
 WOIM is a methodology to describe anything - any state, item(s), pattern,
 action, process, transition, program, instruction set etc. So, you can use
@@ -8,7 +8,30 @@ modeler, or any other way you want to describe something.
 This plugin does both highlighting and various automatic handling of WOIM
 lists, like collapsing lists or parts of lists in a sophisticated way.
 
-For information on WOIM, read the WOIM description in full:
+As you most certainly have already done, to install the WOIM plugin for
+VIM, dowmload woim.vba and do:
+
+  vim woim.vba
+  :so %
+  :q
+
+You will then discover that this file (README_WOIM) will appear in the VIM
+directory, while the documentation will be placed in the "doc"
+subdirectory, the WOIM plugin will be placed in the "syntax" subdirectory.
+A WOIM filetype detection file is placed in the "ftdetect" subdirectory.
+
+From now on all files with the ".woim" file extension will be treated as a
+WOIM file, syntax highlighted corrrectly and you can use all the neat WOIM
+functionality for VIM.
+
+To use WOIM lists within other file types (other than ".woim"), add the
+following to those syntax files:
+
+  syn include @WOIM ~/.vim/syntax/woim.vim
+  syn region WoimSnip matchgroup=Snip start="WOIMstart" end="WOIMend" contains=@WOIM
+  hi link Snip SpecialComment
+
+The documentation file contains all of the WOIM definition and is also found here:
 
   http://isene.com/woim.pdf
 
@@ -42,3 +65,11 @@ For this help and more, including the full WOIM definition/description, type
 
 If you use tab completion after the "WOIM", you will find all the help
 tags in the documentation.
+
+
+Enjoy.
+
+
+Geir Isene
+...explorer of free will
+   http://isene.com
