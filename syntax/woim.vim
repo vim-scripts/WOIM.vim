@@ -12,18 +12,19 @@
 "		Further, I am under no obligation to maintain or extend
 "		this software. It is provided on an 'as is' basis without
 "		any expressed or implied warranty.
-" Version:	1.4.7 - compatible with WOIM v. 1.4
-" Modified:	2011-06-02
+" Version:	1.5.0 - compatible with WOIM v. 1.5
+" Modified:	2011-08-16
 "
 " Changes since previous version:
-"   Modified the GotoRef function (fixed a bug and included feed back)
-"   Better syntax highlighting for folding in gvim
-"   Updating the README_WOIM and documentation files + other cosmetic changes
-"   Added the possibility of disabling/overriding the WOIM plugin key mapping
-"   Added an ftdetect file into woim.vba
-"   (Thanks to Sergey Khorev for the last two improvements)
+"   Added encryption via OpenSSL:
+"       <leader>z encrypts the current line (including all sublevels if folded)
+"       <leader>Z encrypts the current file (all lines)
+"       <leader>x decrypts the current line
+"       <leader>X decrypts the current file (all lines)
 "
-"
+"       A dot file (file name starts with a "." such as .test.woim) is
+"       automatically encrypted on save and decrypted on opening.
+
 " INSTRUCTIONS {{{1
 "
 " Use tabs/shifts or * for indentations
@@ -41,6 +42,14 @@
 "
 " Use <leader><SPACE> to go to the next open template element
 " (A template element is a WOIM item ending in an equal sign)
+"
+" Use <leader>z encrypts the current line (including all sublevels if folded)
+" Use <leader>Z encrypts the current file (all lines)
+" Use <leader>x decrypts the current line
+" Use <leader>X decrypts the current file (all lines)
+"
+" A dot file (file name starts with a "." such as .test.woim) is
+" automatically encrypted on save and decrypted on opening.
 "
 " Syntax updated at start and every time you leave Insert mode
 
@@ -253,6 +262,13 @@ map <leader>V	:call CheckItem("stamped")<CR>
 map gr			:call GotoRef()<CR>
 
 map <leader><SPACE>	/=\s*$<CR>A
+
+nmap <leader>z   V:!openssl bf -e -a -salt 2>/dev/null<CR><C-L>
+vmap <leader>z   :!openssl bf -e -a -salt 2>/dev/null<CR><C-L>
+nmap <leader>Z   :%!openssl bf -e -a -salt 2>/dev/null<CR><C-L>
+nmap <leader>x   V:!openssl bf -d -a 2>/dev/null<CR><C-L>
+vmap <leader>x   :!openssl bf -d -a 2>/dev/null<CR><C-L>
+nmap <leader>X   :%!openssl bf -d -a 2>/dev/null<CR><C-L>
 
 " vim modeline {{{1
 " vim: sw=4 sts=4 et fdm=marker fillchars=fold\:\ :
