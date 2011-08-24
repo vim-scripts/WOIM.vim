@@ -1,4 +1,4 @@
-*woim.txt*   The VIM plugin for WOIM (version 1.5.0)
+*woim.txt*   The VIM plugin for WOIM (version 1.5.1)
 
 WOIM is a methodology to describe anything - any state, item(s), pattern,
 action, process, transition, program, instruction set etc. So, you can use
@@ -12,7 +12,7 @@ this plugin to make a password safe.
 
 The VIM plugin version numbers correspond to the WOIM definition version
 numbers with the VIM plugin adding another increment of versioning, e.g VIM
-plugin version 1.4.7 is compatible with WOIM definition version 1.4
+plugin version 1.5.1 is compatible with WOIM definition version 1.5
 
 This documentation contains the full WOIM definition and is also found here:
 
@@ -114,7 +114,7 @@ to your .vimrc file.
 ==============================================================================
 3. WOIM Definition                                           *WOIM-Definition*
 
-WOIM :: Version 1.5 (2011-08-16)
+WOIM :: Version 1.5 (2011-08-24)
 
 Having worked extensively with flowcharts, relational charts, Venn diagrams,
 Warnier-Orr diagrams and other ways of representing processes, states,
@@ -532,151 +532,156 @@ Would it be possible to compact the descriptions above into a WOIM list? Yes
 indeed. The WOIM system is self-describing. The following list shows the legal
 structure and syntax of a WOIM list. It cover all you have read above:
 
-WOIM list (2011-05-22)
-   [1+] WOIM item
-      [?] Starter; OR: 
-         Identifier (Numbers: Format = "1.1.1.1. ", Mixed: Format = "1A1A ")
-            [?Multi-line item] The Identifier serves as a plus sign ("+")
-               #1.
-         Multi-line indicator = "+"
-            1. Following lines are of same indent with a "space" before
-             the text
-            + If one item on a certain level/indent is multi-line, all items
-             on the same level/indent must start with a plus sign ("+") or #Identifier
-      [?] Type
-         OR: 
-            State = "S: " OR "| "
-            Transition = "T: " OR "/ "
-         Children inherit Type from parent unless marked with different type
-         Can be skipped when the item is obviously a state or transition
-      Content; AND: 
-         [?] Element
-            Operator
-               Anything operating on an item or a set of items
-                  [?Set of items] Items are indented below the operator
-               Can be any of the usual logical operators
-               Is written in capitals ending in a colon and a space
-               EXAMPLES: "AND: ", "OR: ", "AND/OR: ", "NOT: ", "IMPLIES: "
-               To make the item run continuously, use "CONTINUOUS: " 
-                  Item is done concurrent with remaining items
-                  The operator can be combined with a time stamp tag
-                     EXAMPLE: "CONTINUOUS: YYYY-MM-07:" = Do the item weekly
-            Qualifier
-               Format = "[Count?Condition]"; EXAMPLES: 
-                  Do item 3 times = "[3]"
-                  Do item if "the mail has arrived" = "[?the mail has arrived]"
-                  Do item 2 times while "foo=true" = "[2?foo=true]"
-                  Do item from 3 to 5 times while "bar=false" = "[3,5?bar=false]"
-                  Do item 1 or more times = "[1+]"
-                  Do item 1 or more times while "Bob is polite" = "[1+?Bob is polite]"
-                  Do item up to 4 times only while "zoo=0" = "[<4?zoo=0]"
-               Optional item = "[?]"
-               Checking off items
-                  Unchecked item = "[_]"
-                  Checked item = "[x]" 
-                     [?] Timestamp after ("[x] YYYY-MM-DD hh.mm:")
-            Tag
-               Any attribute to the #Content, ending in a colon
-                  Time stamp = "YYYY-MM-DD hh.mm.ss:"
-                     Shorten the format to the appropriate granularity
-                  Time relations
-                     Time relative to previous item = "+YYYY-MM-DD:"
-                     Less than a certain time after previous item = "<+YYYY-MM-DD"
-                     More than a certain time after previous item = ">+YYYY-MM-DD"
-                     Time relative to next item = "-YYYY-MM-DD"
-                     Less than a certain time before next item = "<-YYYY-MM-DD"
-                     More than a certain time before next item = ">-YYYY-MM-DD"
-                     Time relative to other item = "+YYYY-MM-DD#item:"
-                     Other obvious time indicators may be used; EXAMPLES: 
-                        "+1 week:"
-                        "-2 Marsian years:"
-                     EXAMPLES: 
-                        Wait one month before doing the item = "+YYYY-01-DD:"
-                        Do item less than 4 days before next item = "<-YYYY-MM-04:"
-                        Wait one year and two days after item X = "+0001-00-02#X:"
-                  Time repetition
-                     Obvious/intuitive repetition
-                        EXAMPLES: 
-                           "YYYY-MM-03" = Every third day of the month
-                           "YYYY-12-DD" = Every day in every December
-                           "2011-MM-05" = Every fifth day of every month of 2011
-                           "Tue,Fri 12.00" = Noon every Tuesday and Friday
-                     Strict convention
-                        Format = YYYY-MM-DD+X Day hh.mm+Y - YYYY-MM-DD hh.mm; EXAMPLES: 
-                           "2011-05-01+7 13.00" = 2011-05-01 1pm, repeated every 7 days
-                           "2011-05-01+2,3,2" = Every 2, then 3, then 2 days, etc
-                           "2011-05-01+2 - 2012-05-01" = Every second day for one year
-                           "2011-05-01 13.00+1" = 2011-05-01 1pm, repeated every hour
-                           "2011-05-01 Fri,Sat - 2011-10-01" = Fri & Sat in interval
-                  Any other tag
-                     EXAMPLES: "Location = Someplace:", "Responsible = Someone:"
-            Description
-               The main body of the WOIM item, the "meat" of the line
-         [?] Additive
-            Reference
-               + A "#" followed by the name of an item, list or anything else
-                EXAMPLE: Reference to a website = #http://www.isene.com/
-               + A Reference with spaces is enclosed in single quotation marks
-                (#'This is a reference' as opposed to #Reference)
-               + There are two types of references; OR: 
-                  Redirection (hard Reference)
-                     An item consisting only of an reference is a redirection
-                        For a transition item = Jump to reference, continue execution
-                           + If the redirect is to jump back after executing 
-                            the reference (and its children), then add another 
-                            hash at the beginning (##ref)
-                              + EXAMPLE: Use this when creating subroutines at 
-                               the end of the list
-                        For a state item = Include the referenced item
-                     An item consisting only of the key word "SKIP" 
-                        ends the current WOIM level
-                     An item consisting only of the key word "END" 
-                        ends the whole WOIM list
-                  Soft reference
-                     Reference is part of an item
-                        Look at referred item for info only
-                     Even softer reference = have the reference in "()"
-                        An apropos
-               + A reference to any line upward in the WOIM list is simply a
-                reference to the items #Content
-               + A reference downward needs a "/" to separate each level (to
-                make a "path" (like a URL) to the item
-                  EXAMPLE: Reference from here to #Element/Starter/Identifier
-               + For long items in a reference, concatenation can be used
-                  The concatenation must be unique
-                  EXAMPLE: Reference from here to #Comment/Anything...
-            Comment
-               Anything within parenthesis is a comment
-               Is not executed as WOIM commands
-            Quote
-               Anything in quotation marks is a quote
-               Is not executed as WOIM commands
-            Change Markup; OR: 
-               Deletion
-                  Remove the item by adding "<<" at the end of the item
-               Motion; OPTIONS: 
-                  Move the item by adding ">>#Ref"
-                     This moves the item just below the referenced item
-                  Move the item one level in by adding "<-" at the end of the item
-                  Move the item one level out by adding "->" at the end of the item
-               EXAMPLE: Move an item as a child to Reference = ">>#Ref->"
-      Separator 
-         OR: 
-            Semicolon
-               A semicolon is used to separate two WOIM items on the same line
-            Newline
-               Used to add another item on the same level
-               Indent
-                  A Tab or an Asterisk ("*")
-                     Used to add a child
-                        A child adds information to its parent
-                        A child is another regular #'WOIM item'
-         Definition
-            A separator and no indent reads "then:"
-            [? parent contains #Description] 
-               The separator and right indent reads "consists of:"
-            [? NOT: parent contains #Description] 
-               The separator and right indent reads "applies to:"
+WOIM list (2011-08-24)
+	[1+] WOIM item
+		[?] Starter; OR: 
+			Identifier (Numbers: Format = "1.1.1.1. ", Mixed: Format = "1A1A ")
+				[?Multi-line item] The Identifier serves as a plus sign ("+")
+					#1.
+			Multi-line indicator = "+"
+				1. Following lines are of same indent with a "space" before
+				 the text
+				+ If one item on a certain level/indent is multi-line, all items
+				 on the same level/indent must start with a plus sign ("+") or #Identifier
+		[?] Type
+			OR: 
+				State = "S: " OR "| "
+				Transition = "T: " OR "/ "
+			Children inherit Type from parent unless marked with different type
+			Can be skipped when the item is obviously a state or transition
+		Content; AND: 
+			[?] Element
+				Operator
+					Anything operating on an item or a set of items
+						[?Set of items] Items are indented below the operator
+					Can be any of the usual logical operators
+					Is written in capitals ending in a colon and a space
+					EXAMPLES: "AND: ", "OR: ", "AND/OR: ", "NOT: ", "IMPLIES: "
+					To make the item run continuously, use "CONTINUOUS: " 
+						Item is done concurrent with remaining items
+						The operator can be combined with a time stamp tag
+							EXAMPLE: "CONTINUOUS: YYYY-MM-07:" = Do the item weekly
+						  To show that an item is encrypted or to be encrypted, use "ENCRYPTION:"
+								OR: 
+									 The encrypted block can be correctly indented
+									 The encrypted block contains indentation and is left justified
+										  This would seem to break the list, but is allowed
+				Qualifier
+					Format = "[Count?Condition]"; EXAMPLES: 
+						Do item 3 times = "[3]"
+						Do item if "the mail has arrived" = "[?the mail has arrived]"
+						Do item 2 times while "foo=true" = "[2?foo=true]"
+						Do item from 3 to 5 times while "bar=false" = "[3,5?bar=false]"
+						Do item 1 or more times = "[1+]"
+						Do item 1 or more times while "Bob is polite" = "[1+?Bob is polite]"
+						Do item up to 4 times only while "zoo=0" = "[<4?zoo=0]"
+					Optional item = "[?]"
+					Checking off items
+						Unchecked item = "[_]"
+						Checked item = "[x]" 
+							[?] Timestamp after ("[x] YYYY-MM-DD hh.mm:")
+				Tag
+					Any attribute to the #Content, ending in a colon
+						Time stamp = "YYYY-MM-DD hh.mm.ss:"
+							Shorten the format to the appropriate granularity
+						Time relations
+							Time relative to previous item = "+YYYY-MM-DD:"
+							Less than a certain time after previous item = "<+YYYY-MM-DD"
+							More than a certain time after previous item = ">+YYYY-MM-DD"
+							Time relative to next item = "-YYYY-MM-DD"
+							Less than a certain time before next item = "<-YYYY-MM-DD"
+							More than a certain time before next item = ">-YYYY-MM-DD"
+							Time relative to other item = "+YYYY-MM-DD#item:"
+							Other obvious time indicators may be used; EXAMPLES: 
+								"+1 week:"
+								"-2 Marsian years:"
+							EXAMPLES: 
+								Wait one month before doing the item = "+YYYY-01-DD:"
+								Do item less than 4 days before next item = "<-YYYY-MM-04:"
+								Wait one year and two days after item X = "+0001-00-02#X:"
+						Time repetition
+							Obvious/intuitive repetition
+								EXAMPLES: 
+									"YYYY-MM-03" = Every third day of the month
+									"YYYY-12-DD" = Every day in every December
+									"2011-MM-05" = Every fifth day of every month of 2011
+									"Tue,Fri 12.00" = Noon every Tuesday and Friday
+							Strict convention
+								Format = YYYY-MM-DD+X Day hh.mm+Y - YYYY-MM-DD hh.mm; EXAMPLES: 
+									"2011-05-01+7 13.00" = 2011-05-01 1pm, repeated every 7 days
+									"2011-05-01+2,3,2" = Every 2, then 3, then 2 days, etc
+									"2011-05-01+2 - 2012-05-01" = Every second day for one year
+									"2011-05-01 13.00+1" = 2011-05-01 1pm, repeated every hour
+									"2011-05-01 Fri,Sat - 2011-10-01" = Fri & Sat in interval
+						Any other tag
+							EXAMPLES: "Location = Someplace:", "Responsible = Someone:"
+				Description
+					The main body of the WOIM item, the "meat" of the line
+			[?] Additive
+				Reference
+					+ A "#" followed by the name of an item, list or anything else
+					 EXAMPLE: Reference to a website = #http://www.isene.com/
+					+ A Reference with spaces is enclosed in single quotation marks
+					 (#'This is a reference' as opposed to #Reference)
+					+ There are two types of references; OR: 
+						Redirection (hard Reference)
+							An item consisting only of an reference is a redirection
+								For a transition item = Jump to reference, continue execution
+									+ If the redirect is to jump back after executing 
+									 the reference (and its children), then add another 
+									 hash at the beginning (##ref)
+										+ EXAMPLE: Use this when creating subroutines at 
+										 the end of the list
+								For a state item = Include the referenced item
+							An item consisting only of the key word "SKIP" 
+								ends the current WOIM level
+							An item consisting only of the key word "END" 
+								ends the whole WOIM list
+						Soft reference
+							Reference is part of an item
+								Look at referred item for info only
+							Even softer reference = have the reference in "()"
+								An apropos
+					+ A reference to any line upward in the WOIM list is simply a
+					 reference to the items #Content
+					+ A reference downward needs a "/" to separate each level (to
+					 make a "path" (like a URL) to the item
+						EXAMPLE: Reference from here to #Element/Starter/Identifier
+					+ For long items in a reference, concatenation can be used
+						The concatenation must be unique
+						EXAMPLE: Reference from here to #Comment/Anything...
+				Comment
+					Anything within parenthesis is a comment
+					Is not executed as WOIM commands
+				Quote
+					Anything in quotation marks is a quote
+					Is not executed as WOIM commands
+				Change Markup; OR: 
+					Deletion
+						Remove the item by adding "<<" at the end of the item
+					Motion; OPTIONS: 
+						Move the item by adding ">>#Ref"
+							This moves the item just below the referenced item
+						Move the item one level in by adding "<-" at the end of the item
+						Move the item one level out by adding "->" at the end of the item
+					EXAMPLE: Move an item as a child to Reference = ">>#Ref->"
+		Separator 
+			OR: 
+				Semicolon
+					A semicolon is used to separate two WOIM items on the same line
+				Newline
+					Used to add another item on the same level
+					Indent
+						A Tab or an Asterisk ("*")
+							Used to add a child
+								A child adds information to its parent
+								A child is another regular #'WOIM item'
+			Definition
+				A separator and no indent reads "then:"
+				[? parent contains #Description] 
+					The separator and right indent reads "consists of:"
+				[? NOT: parent contains #Description] 
+					The separator and right indent reads "applies to:"
 
 Read and re-read the WOIM list above, and you will be a WOIM master after a
 while. It's all there. The whole markup.
@@ -690,6 +695,11 @@ itself; Geir Isene. More at http//isene.com
 ==============================================================================
 5. Changelog                                                  *WOIM-Changelog*
 
+
+VERSION 1.5.0		2011-08-16
+
+  Changes:
+	Minor updates to the documentation.
 
 VERSION 1.5.0		2011-08-16
 
