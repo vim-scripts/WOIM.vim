@@ -1,4 +1,4 @@
-*woim.txt*   The VIM plugin for WOIM (version 1.5.1)
+*woim.txt*   The VIM plugin for WOIM (version 1.5.2)
 
 WOIM is a methodology to describe anything - any state, item(s), pattern,
 action, process, transition, program, instruction set etc. So, you can use
@@ -110,6 +110,29 @@ If you want to disable or override these keymaps with your own, simply add
   let g:WoimDisableMapping = 1
 
 to your .vimrc file.
+
+To use a WOIM list within any other file type, you can use nested syntax.
+Add the following to that other syntax highlighting plugin file:
+
+	syn include @WOIM ~/.vim/syntax/woim.vim
+	syn region WoimSnip matchgroup=Snip start="WOIMstart" end="WOIMend" contains=@WOIM
+	hi link Snip SpecialComment
+
+If you add those three lines in your .vim/syntax/txt.vim you will be able to
+include WOIM lists in files with a .txt extension like this:
+
+WOIMstart
+This is a WOIM test list
+	Here is a child to the above item
+		Here is "grand child"
+	Here we are one level back
+		And here's another level down
+		[5] Dance steps
+		[3] Hurray
+		Smile
+WOIMend
+
+The "WOIMstart" and "WOIMend" must be at the start of the line.
 
 ==============================================================================
 3. WOIM Definition                                           *WOIM-Definition*
@@ -689,14 +712,22 @@ while. It's all there. The whole markup.
 ==============================================================================
 4. About                                                          *WOIM-About*
 
-The author of the VIM plugin for WOIM is also the chief maintainer of WOIM
-itself; Geir Isene. More at http//isene.com 
+The author of the VIM plugin for WOIM is also the chief maintainer of the WOIM
+definition itself; Geir Isene. More at http//isene.com 
 
 ==============================================================================
 5. Changelog                                                  *WOIM-Changelog*
 
+VERSION 1.5.2		2011-09-08
 
-VERSION 1.5.0		2011-08-16
+  Changes:
+	Added "presentation mode" where you can traverse a WOIM list with
+	"g<DOWN>" or "g<UP>" to view only the current line and its ancestors.
+	Changed Quotes and Comments to only cover one line (before when it
+	covered several lines, the plugin became very slow for large lists).
+	Added instructions in doc file on using WOIM list in other file types.
+
+VERSION 1.5.1		2011-08-16
 
   Changes:
 	Minor updates to the documentation.

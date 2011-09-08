@@ -12,18 +12,13 @@
 "		Further, I am under no obligation to maintain or extend
 "		this software. It is provided on an 'as is' basis without
 "		any expressed or implied warranty.
-" Version:	1.5.0 - compatible with WOIM v. 1.5
-" Modified:	2011-08-16
+" Version:	1.5.2 - compatible with WOIM v. 1.5
+" Modified:	2011-09-08
 "
 " Changes since previous version:
-"   Added encryption via OpenSSL:
-"       <leader>z encrypts the current line (including all sublevels if folded)
-"       <leader>Z encrypts the current file (all lines)
-"       <leader>x decrypts the current line
-"       <leader>X decrypts the current file (all lines)
-"
-"       A dot file (file name starts with a "." such as .test.woim) is
-"       automatically encrypted on save and decrypted on opening.
+"   Added "presentation mode" where you can traverse a WOIM list with
+"   "g<DOWN>" or "g<UP>" to view only the current line and its ancestors.
+"   Added instructions in doc file on using WOIM list in other file types.
 
 " INSTRUCTIONS {{{1
 "
@@ -164,10 +159,10 @@ syn match   WOIMsc	";"
 syn match   WOIMref	"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9,.:/ _&?%=\-\*]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=\-\*]\+\)" contains=WOIMcomment
 
 " Comments are enclosed within ( )
-syn match   WOIMcomment "(\_.\{-})" contains=WOIMtodo,WOIMref
+syn match   WOIMcomment "(.*)" contains=WOIMtodo,WOIMref
 
 " Text in quotation marks
-syn match   WOIMquote   '"\_.\{-}"' contains=WOIMtodo,WOIMref
+syn match   WOIMquote   '".*"' contains=WOIMtodo,WOIMref
 
 " TODO  or FIXME
 syn keyword WOIMtodo    TODO FIXME						
@@ -262,6 +257,9 @@ map <leader>V	:call CheckItem("stamped")<CR>
 map gr			:call GotoRef()<CR>
 
 map <leader><SPACE>	/=\s*$<CR>A
+
+nmap g<DOWN>            <DOWN><leader>0zv
+nmap g<UP>              <UP><leader>0zv
 
 nmap <leader>z   V:!openssl bf -e -a -salt 2>/dev/null<CR><C-L>
 vmap <leader>z   :!openssl bf -e -a -salt 2>/dev/null<CR><C-L>
