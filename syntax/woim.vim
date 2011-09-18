@@ -12,13 +12,15 @@
 "		Further, I am under no obligation to maintain or extend
 "		this software. It is provided on an 'as is' basis without
 "		any expressed or implied warranty.
-" Version:	1.5.2 - compatible with WOIM v. 1.5
-" Modified:	2011-09-08
+" Version:	1.5.3 - compatible with the WOIM definition v. 1.5
+" Modified:	2011-09-18
 "
 " Changes since previous version:
-"   Added "presentation mode" where you can traverse a WOIM list with
-"   "g<DOWN>" or "g<UP>" to view only the current line and its ancestors.
-"   Added instructions in doc file on using WOIM list in other file types.
+"   New feature: LaTeX conversion: Turn your WOIM list into a LaTeX document.
+"                Mapped to <leader>L (feature suggested by  Shantanu Kulkarni).
+"   Added "set autoindent" to plugin settings (thanks to Shantanu Kulkarni).
+"   Minor fixes.
+"   Updated documentation.
 
 " INSTRUCTIONS {{{1
 "
@@ -58,6 +60,7 @@ endif
 
 " Basic settings {{{1
 let b:current_syntax="WOIM"
+set autoindent
 set textwidth=0
 set shiftwidth=2
 set tabstop=2
@@ -134,6 +137,106 @@ function! GotoRef()
   endif
 endfunction
 
+"LaTeX conversion{{{2
+"Mapped to '<leader>L'
+function! LaTeXconversion ()
+    try
+        "WOIMb
+        execute '%s/ \@<=\*\(.\{-}\)\* /\\textbf{ \1 }/g'
+    catch
+    endtry
+    try
+        "WOIMi
+        execute '%s/ \@<=\/\(.\{-}\)\/ /\\textsl{ \1 }/g'
+    catch
+    endtry
+    try
+        "WOIMu
+        execute '%s/ \@<=_\(.\{-}\)_ /\\underline{ \1 }/g'
+    catch
+    endtry
+    try
+        "WOIMindent
+        execute '%s/\(\t\|\*\)\@<=\([0-9.]\+\.\s\)/\1\\textcolor{v}{\2}/g'
+    catch
+    endtry
+    try
+        "WOIMmulti
+        execute '%s/\(\t\|\*\)+/\\tab \\textcolor{r}{+}/g'
+    catch
+    endtry
+    try
+        "WOIMref
+        execute "%s/\\(#\\{1,2}\\(\\'[a-zA-ZæøåÆØÅ0-9,.:/ _&?%=\\-\\*]\\+\\'\\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=\\-\\*]\\+\\)\\)/\\\\textcolor{v}{\\1}/g"
+    catch
+    endtry
+    try
+        "WOIMquote
+        execute '%s/\(\".*\"\)/\\textcolor{t}{\1}/g'
+    catch
+    endtry
+    try
+        "WOIMcomment
+        execute '%s/\((.*)\)/\\textcolor{t}{\1}/g'
+    catch
+    endtry
+    try
+        "WOIMmove
+        execute '%s/\(>>\|<<\|->\|<-\)/\\textbf{\1}/g'
+    catch
+    endtry
+    try
+    try
+        "WOIMqual
+        execute '%s/\(\[.\{-}\]\)/\\textcolor{g}{\1}/g'
+    catch
+    endtry
+    try
+        "WOIMop
+        execute "%s/\\(\\s\\|\\*\\)\\@<=\\([A-ZÆØÅ_/]\\{-2,}:\\s\\)/\\\\textcolor{b}{\\2}/g"
+    catch
+    endtry
+    try
+        "WOIMtag
+        execute "%s/\\(\\s\\|\\*\\)\\@<=\\([a-zA-ZæøåÆØÅ0-9,._&?%= \\-\\/+<>#']\\{-2,}:\\s\\)/\\\\textcolor{r}{\\emph{\\2}}/g"
+    catch
+    endtry
+    try
+        "WOIMsc
+        execute '%s/\(;\)/\\textcolor{g}{\1}/g'
+    catch
+    endtry
+    "Substitute tabs + space in second line of multi-item
+        execute '%s/\(\t\|\*\)  /\\tab \\tab /g'
+    catch
+    endtry
+    try
+    "Substitute tabs
+        execute '%s/\(\t\|\*\)/\\tab /g'
+    catch
+    endtry
+    "Document start
+    normal ggO%Created by the WOIM vim plugin, see:
+    normal o%http://vim.sourceforge.net/scripts/script.php?script_id=2518
+    normal o
+    normal o\documentclass[10pt]{article}
+    normal o\usepackage[margin=1cm]{geometry}
+    normal o\usepackage[usenames]{color}
+    normal o\usepackage{alltt}
+    normal o\newcommand{\tab}{\hspace*{2em}}
+    normal o\definecolor{r}{rgb}{0.5,0,0}
+    normal o\definecolor{g}{rgb}{0,0.5,0}
+    normal o\definecolor{b}{rgb}{0,0,0.5}
+    normal o\definecolor{v}{rgb}{0.4,0,0.4}
+    normal o\definecolor{t}{rgb}{0,0.4,0.4}
+    normal o
+    normal o\begin{document}
+    normal o\begin{alltt}
+    "Document end
+    normal Go\end{alltt}
+    normal o\end{document}
+endfunction
+
 " Syntax definitions {{{1
 
 " WOIM elements {{{2
@@ -150,7 +253,7 @@ syn match   WOIMqual    "\[.\{-}\]" contains=WOIMtodo,WOIMref,WOIMcomment
 syn match   WOIMtag	'\(\s\|\*\)\@<=[a-zA-ZæøåÆØÅ0-9,._&?%= \-\/+<>#']\{-2,}:\s' contains=WOIMtodo,WOIMcomment,WOIMquote,WOIMref
 
 " WOIM operators
-syn match   WOIMop	"\s[A-ZÆØÅ_/]\{-2,}:\s" contains=WOIMcomment,WOIMquote
+syn match   WOIMop	'\(\s\|\*\)\@<=[A-ZÆØÅ_/]\{-2,}:\s' contains=WOIMcomment,WOIMquote
 
 " Mark semicolon as stringing together lines
 syn match   WOIMsc	";"
@@ -254,9 +357,9 @@ map <leader>T	:hi link WOIMtrans underlined<CR>
 map <leader>v	:call CheckItem("")<CR>
 map <leader>V	:call CheckItem("stamped")<CR>
 
-map gr			:call GotoRef()<CR>
-
 map <leader><SPACE>	/=\s*$<CR>A
+
+map gr			:call GotoRef()<CR>
 
 nmap g<DOWN>            <DOWN><leader>0zv
 nmap g<UP>              <UP><leader>0zv
@@ -267,6 +370,8 @@ nmap <leader>Z   :%!openssl bf -e -a -salt 2>/dev/null<CR><C-L>
 nmap <leader>x   V:!openssl bf -d -a 2>/dev/null<CR><C-L>
 vmap <leader>x   :!openssl bf -d -a 2>/dev/null<CR><C-L>
 nmap <leader>X   :%!openssl bf -d -a 2>/dev/null<CR><C-L>
+
+nmap <leader>L  :call LaTeXconversion()<CR>
 
 " vim modeline {{{1
 " vim: sw=4 sts=4 et fdm=marker fillchars=fold\:\ :

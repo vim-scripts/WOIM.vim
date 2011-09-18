@@ -6,7 +6,7 @@ WOIM is a methodology to describe anything - any state, item(s), pattern, action
 
 This plugin does both highlighting and various automatic handling of WOIM lists, like collapsing lists or parts of lists in a sophisticated way.
 
-The plugin incorporates encryption. You can encrypt any part of a WOIM list or take advantage of the autoencryption feature by making the WOIM list a dot file - i.e. prefixing the file name with a dot (such as ".test.woim"). You can use this plugin to make a password safe - it turns off viminfo and swapfiles to ensure security.
+The plugin incorporates encryption. You can encrypt any part of a WOIM list or take advantage of the autoencryption feature by making the WOIM list a dot file - i.e. prefixing the file name with a dot (such as ".test.woim"). You can use this plugin to make a password safe - it turns off viminfo and swap files to ensure security.
 
 For information on WOIM, read the WOIM description in full:
 
@@ -32,6 +32,10 @@ Use "gr" (without the quotation marks, signifies "Goto Ref") while the cursor is
 Use <leader><SPACE> to go to the next open template element (a template element is a WOIM item ending in an equal sign)
 
 As a sort of "presentation mode", you can traverse a WOIM list by using g<DOWN> or g<UP> to view only the current line and its ancestors.
+
+Use <leader>L to convert the entire document to LaTaX
+
+The LaTeX conversion includes color coding of the various elements similar to the colors used for WOIM files within VIM.
 
 Use <leader>z to encrypt the current line (including all sublevels if folded)
 Use <leader>Z to encrypt the current file (all lines)

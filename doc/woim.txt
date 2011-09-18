@@ -1,4 +1,4 @@
-*woim.txt*   The VIM plugin for WOIM (version 1.5.2)
+*woim.txt*   The VIM plugin for WOIM (version 1.5.3)
 
 WOIM is a methodology to describe anything - any state, item(s), pattern,
 action, process, transition, program, instruction set etc. So, you can use
@@ -12,7 +12,7 @@ this plugin to make a password safe.
 
 The VIM plugin version numbers correspond to the WOIM definition version
 numbers with the VIM plugin adding another increment of versioning, e.g VIM
-plugin version 1.5.1 is compatible with WOIM definition version 1.5
+plugin version 1.5.3 is compatible with WOIM definition version 1.5
 
 This documentation contains the full WOIM definition and is also found here:
 
@@ -90,10 +90,22 @@ When working wiht WOIM lists in VIM:
 	Use <leader><SPACE> to go to the next open template element
 	(A template element is a WOIM item ending in an equal sign)
 
+  As a sort of "presentation mode", you can traverse a WOIM list by using
+  g<DOWN> or g<UP> to view only the current line and its ancestors.
+
+	Use <leader>L to convert the entire document to LaTaX
+
+The LaTeX conversion includes color coding of the various elements similar to
+the colors used for WOIM files within VIM.
+
   Use <leader>z to encrypt the current line (including all sublevels if folded)
   Use <leader>Z to encrypt the current file (all lines)
   Use <leader>x to decrypt the current line (mark all subsequent encrypted lines)
   Use <leader>X to decrypt the current file (all lines)
+
+If you enter the wrong password while trying to decrypt, you will end up with
+garbage characters. To fix it, press "u" (undo) and try decrypting again with
+the correct password.
 
 If you want a WOIM list to be automatically encrypted upon saving and decrypted
 upon opening it, just prefix the filename with a dot (like ".test.woim"). It
@@ -717,6 +729,16 @@ definition itself; Geir Isene. More at http//isene.com
 
 ==============================================================================
 5. Changelog                                                  *WOIM-Changelog*
+
+VERSION 1.5.3		2011-09-18
+
+	Changes:
+	New feature: LaTeX conversion: Turn your WOIM list into a LaTeX document.
+	             Mapped to <leader>L (feature suggested by  Shantanu Kulkarni).
+	Added "set autoindent" to plugin settings (thanks to Shantanu Kulkarni).
+	Minor fixes.
+	Updated documentation.
+
 
 VERSION 1.5.2		2011-09-08
 
