@@ -1,4 +1,4 @@
-*woim.txt*   The VIM plugin for WOIM (version 1.5.3)
+*woim.txt*   The VIM plugin for WOIM (version 1.6)
 
 WOIM is a methodology to describe anything - any state, item(s), pattern,
 action, process, transition, program, instruction set etc. So, you can use
@@ -92,6 +92,7 @@ When working wiht WOIM lists in VIM:
 
   As a sort of "presentation mode", you can traverse a WOIM list by using
   g<DOWN> or g<UP> to view only the current line and its ancestors.
+  An alternative is <leader><DOWN> and <leader><UP> to open more levels down.
 
 	Use <leader>L to convert the entire document to LaTaX
 
@@ -331,6 +332,22 @@ indented in the WOIM list, or if the indentation is made part of the encrypted
 block, it will be fully left justified. This is the only item that is allowed
 to break the indentation rules.
 
+If you need to include one or more lines inside a WOIM list that includes WOIM
+expressions that you don't want to be interpreted as WOIM expressions, then use
+a "literal block". This is equivalent as "pre-formated text" in HTML and some
+word processors. To include such a block of lines, simply mark the start and
+end of the literal block with a single backslash ("\") on a line. Example:
+
+	\
+	This is a block of literal text...
+	Where nothing counts as WOIM markup
+	Thus this: [?], "This", or THIS: #Test are not seen as markup
+	...until we end this block with...
+	\
+
+Literal blocks are useful when you want to includes for instance a block of
+programming code in the middle of a WOIM list.
+
 ------------------------------------------------------------------------------
 3.2.3.1.2 Qualifier                                           *WOIM-Qualifier*
 
@@ -567,7 +584,8 @@ Would it be possible to compact the descriptions above into a WOIM list? Yes
 indeed. The WOIM system is self-describing. The following list shows the legal
 structure and syntax of a WOIM list. It cover all you have read above:
 
-WOIM list (2011-08-24)
+WOIMstart
+WOIM list (2011-12-08)
 	[1+] WOIM item
 		[?] Starter; OR: 
 			Identifier (Numbers: Format = "1.1.1.1. ", Mixed: Format = "1A1A ")
@@ -596,11 +614,20 @@ WOIM list (2011-08-24)
 						Item is done concurrent with remaining items
 						The operator can be combined with a time stamp tag
 							EXAMPLE: "CONTINUOUS: YYYY-MM-07:" = Do the item weekly
-						  To show that an item is encrypted or to be encrypted, use "ENCRYPTION:"
-								OR: 
-									 The encrypted block can be correctly indented
-									 The encrypted block contains indentation and is left justified
-										  This would seem to break the list, but is allowed
+					To show that an item is encrypted or to be encrypted, use "ENCRYPTION:"
+						OR: 
+							 The encrypted block can be correctly indented
+							 The encrypted block contains indentation and is left justified
+									This would seem to break the list, but is allowed
+					A block can be included of "literal text" negating any WOIM markup
+						Use a WOIM item containing only the operator "/" to mark start/end
+							EXAMPLE: 
+								\
+								This is a block of literal text...
+								Where nothing counts as WOIM markup
+								Thus this: [?], "This", or THIS: #Test are not seen as markup
+								...until we end this block with...
+								\
 				Qualifier
 					Format = "[Count?Condition]"; EXAMPLES: 
 						Do item 3 times = "[3]"
@@ -717,6 +744,7 @@ WOIM list (2011-08-24)
 					The separator and right indent reads "consists of:"
 				[? NOT: parent contains #Description] 
 					The separator and right indent reads "applies to:"
+WOIMend
 
 Read and re-read the WOIM list above, and you will be a WOIM master after a
 while. It's all there. The whole markup.
@@ -725,10 +753,19 @@ while. It's all there. The whole markup.
 4. About                                                          *WOIM-About*
 
 The author of the VIM plugin for WOIM is also the chief maintainer of the WOIM
-definition itself; Geir Isene. More at http//isene.com 
+definition itself; Geir Isene <g@isene.com>. More at http//isene.com 
 
 ==============================================================================
 5. Changelog                                                  *WOIM-Changelog*
+
+VERSION 1.6			2011-12-08
+
+	Changes:
+	Added marking of literal regions with special marking of start/end ("\")
+	Added <leader><DOWN> and <leader><UP>
+	Fixed syntax marking for State/Transitions where indent is "*"
+	Fixed escaping "\", "{" and "}" for LaTeX conversion
+
 
 VERSION 1.5.3		2011-09-18
 

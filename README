@@ -31,7 +31,7 @@ Use "gr" (without the quotation marks, signifies "Goto Ref") while the cursor is
 
 Use <leader><SPACE> to go to the next open template element (a template element is a WOIM item ending in an equal sign)
 
-As a sort of "presentation mode", you can traverse a WOIM list by using g<DOWN> or g<UP> to view only the current line and its ancestors.
+As a sort of "presentation mode", you can traverse a WOIM list by using g<DOWN> or g<UP> to view only the current line and its ancestors. An alternative is <leader><DOWN> and <leader><UP> to open more levels down.
 
 Use <leader>L to convert the entire document to LaTaX
 

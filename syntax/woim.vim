@@ -12,15 +12,14 @@
 "		Further, I am under no obligation to maintain or extend
 "		this software. It is provided on an 'as is' basis without
 "		any expressed or implied warranty.
-" Version:	1.5.3 - compatible with the WOIM definition v. 1.5
-" Modified:	2011-09-18
+" Version:	1.6 - compatible with the WOIM definition v. 1.6
+" Modified:	2011-12-08
 "
 " Changes since previous version:
-"   New feature: LaTeX conversion: Turn your WOIM list into a LaTeX document.
-"                Mapped to <leader>L (feature suggested by  Shantanu Kulkarni).
-"   Added "set autoindent" to plugin settings (thanks to Shantanu Kulkarni).
-"   Minor fixes.
-"   Updated documentation.
+"   Added marking of literal regions with special marking of start/end ("/")
+"   Added <leader><DOWN> and <leader><UP>
+"   Fixed syntax marking for State/Transitions where indent is "*"
+"   Fixed escaping "\", "{" and "}" for LaTeX conversion
 
 " INSTRUCTIONS {{{1
 "
@@ -40,6 +39,11 @@
 " Use <leader><SPACE> to go to the next open template element
 " (A template element is a WOIM item ending in an equal sign)
 "
+" g<DOWN> or g<UP> to view only the current line and its ancestors.
+" An alternative is <leader><DOWN> and <leader><UP> to open more levels down.
+" 
+" Use <leader>L to convert the entire document to LaTaX
+
 " Use <leader>z encrypts the current line (including all sublevels if folded)
 " Use <leader>Z encrypts the current file (all lines)
 " Use <leader>x decrypts the current line
@@ -49,6 +53,7 @@
 " automatically encrypted on save and decrypted on opening.
 "
 " Syntax updated at start and every time you leave Insert mode
+" As a sort of "presentation mode", you can traverse a WOIM list by using
 
 
 " Initializing {{{1
@@ -140,6 +145,21 @@ endfunction
 "LaTeX conversion{{{2
 "Mapped to '<leader>L'
 function! LaTeXconversion ()
+    try
+        "Escape "\"
+        execute '%s/\\/\\\\/g'
+    catch
+    endtry
+    try
+        "Escape "{"
+        execute '%s/{/\\{/g'
+    catch
+    endtry
+    try
+        "Escape "}"
+        execute '%s/}/\\}/g'
+    catch
+    endtry
     try
         "WOIMb
         execute '%s/ \@<=\*\(.\{-}\)\* /\\textbf{ \1 }/g'
@@ -261,11 +281,20 @@ syn match   WOIMsc	";"
 " References start with a hash (#)
 syn match   WOIMref	"#\{1,2}\(\'[a-zA-ZæøåÆØÅ0-9,.:/ _&?%=\-\*]\+\'\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=\-\*]\+\)" contains=WOIMcomment
 
+" Reserved key words
+syn keyword WOIMkey     END SKIP
+
+" Marking literal start and end (a whole literal region is folded as one block)
+syn match   WOIMlit     "\(\s\|\*\)\@<=\\$"
+
+" Content of litaral (with no syntax highlighting)
+syn match   WOIMlc      "\(\s\|\*\)\\\_.\{-}\(\s\|\*\)\\" contains=WOIMlit
+
 " Comments are enclosed within ( )
-syn match   WOIMcomment "(.*)" contains=WOIMtodo,WOIMref
+syn match   WOIMcomment "(.\{-})" contains=WOIMtodo,WOIMref
 
 " Text in quotation marks
-syn match   WOIMquote   '".*"' contains=WOIMtodo,WOIMref
+syn match   WOIMquote   '".\{-}"' contains=WOIMtodo,WOIMref
 
 " TODO  or FIXME
 syn keyword WOIMtodo    TODO FIXME						
@@ -279,11 +308,11 @@ syn match   WOIMi	" \@<=/.\{-}/ "
 syn match   WOIMu	" \@<=_.\{-}_ "
 
 " State & Transitions
-syn match   WOIMstate	"\([.* \t]S: \)\@<=[^;]*" contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMqual,WOIMsc,WOIMmove,WOIMtag,WOIMquote
-syn match   WOIMtrans	"\([.* \t]T: \)\@<=[^;]*" contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMqual,WOIMsc,WOIMmove,WOIMtag,WOIMquote
+syn match   WOIMstate	"\(\(\s\|\*\)S: \)\@<=[^;]*" contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMqual,WOIMsc,WOIMmove,WOIMtag,WOIMquote
+syn match   WOIMtrans	"\(\(\s\|\*\)T: \)\@<=[^;]*" contains=WOIMtodo,WOIMop,WOIMcomment,WOIMref,WOIMqual,WOIMsc,WOIMmove,WOIMtag,WOIMquote
 
 " Cluster the above
-syn cluster WOIMtxt contains=WOIMident,WOIMmulti,WOIMop,WOIMqual,WOIMtag,WOIMref,WOIMcomment,WOIMquote,WOIMsc,WOIMtodo,WOIMmove,WOIMb,WOIMi,WOIMu,WOIMstate,WOIMtrans
+syn cluster WOIMtxt contains=WOIMident,WOIMmulti,WOIMop,WOIMqual,WOIMtag,WOIMref,WOIMkey,WOIMlit,WOIMlc,WOIMcomment,WOIMquote,WOIMsc,WOIMtodo,WOIMmove,WOIMb,WOIMi,WOIMu,WOIMstate,WOIMtrans
 
 " WOIM indentation (folding levels) {{{2
 syn region L15 start="^\(\t\|\*\)\{14} \=\S" end="^\(^\(\t\|\*\)\{15,} \=\S\)\@!" fold contains=@WOIMtxt
@@ -314,6 +343,9 @@ hi def link WOIMop	Function
 hi def link WOIMqual	Type
 hi def link WOIMtag	String
 hi def link WOIMref	Define
+hi def link WOIMkey	Define
+hi          WOIMlit     ctermfg=none ctermbg=none gui=italic term=italic cterm=italic
+hi          WOIMlc      ctermfg=white ctermbg=none
 hi def link WOIMcomment	Comment
 hi def link WOIMquote	Comment
 hi def link WOIMsc	Type
@@ -362,7 +394,10 @@ map <leader><SPACE>	/=\s*$<CR>A
 map gr			:call GotoRef()<CR>
 
 nmap g<DOWN>            <DOWN><leader>0zv
-nmap g<UP>              <UP><leader>0zv
+nmap g<UP>              <leader>f<UP><leader>0zv
+
+nmap <leader><DOWN>     <DOWN><leader>0zv<SPACE>zO
+nmap <leader><UP>       <leader>f<UP><leader>0zv<SPACE>zO
 
 nmap <leader>z   V:!openssl bf -e -a -salt 2>/dev/null<CR><C-L>
 vmap <leader>z   :!openssl bf -e -a -salt 2>/dev/null<CR><C-L>
