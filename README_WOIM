@@ -57,7 +57,10 @@ Use <leader>v to add a checkbox at start of item or to toggle a checkbox
 Use <leader>V to add/toggle a checkbox with a date stamp for completion
 
 Use "gr" (without the quotation marks, signifies "Goto Ref") while the
-cursor is on a WOIM reference to jump to that destination in a WOIM list
+cursor is on a WOIM reference to jump to that destination in a WOIM list.
+Use "n" after a "gr" to verify that the reference destination is unique. A
+reference can be in the list or to a file by the use of
+#file:/pathto/filename, #file:~/filename or #file:filename.
 
 Use <leader><SPACE> to go to the next open template element
 (A template element is a WOIM item ending in an equal sign)

@@ -1,4 +1,4 @@
-*woim.txt*   The VIM plugin for WOIM (version 1.6)
+*woim.txt*   The VIM plugin for WOIM (version 1.7)
 
 WOIM is a methodology to describe anything - any state, item(s), pattern,
 action, process, transition, program, instruction set etc. So, you can use
@@ -84,8 +84,11 @@ When working wiht WOIM lists in VIM:
 	Use <leader>v to add a checkbox at start of item or to toggle a checkbox
 	Use <leader>V to add/toggle a checkbox with a date stamp for completion
 
-	Use "gr" (without the quotation marks, signifies "Goto Ref") while the
-	cursor is on a WOIM reference to jump to that destination in a WOIM list
+	Use "gr" (without the quotation marks, signifies "Goto Ref") while the 
+	cursor is on a WOIM reference to jump to that destination in a WOIM list.
+	Use "n" after a "gr" to verify that the reference destination is unique.
+	A reference can be in the list or to a file by the use of 
+	#file:/pathto/filename, #file:~/filename or #file:filename.
 
 	Use <leader><SPACE> to go to the next open template element
 	(A template element is a WOIM item ending in an equal sign)
@@ -456,9 +459,9 @@ Markup".
 3.2.3.2.1 References                                         *WOIM-References*
 
 A "#" followed by the name of an item, list or anything else is a Reference. An
-example would be a Reference to a website such as "#http://www.isene.com/". A
-Reference with spaces must be enclosed in single quotation marks - "#'This is a
-reference'" as opposed to "#Reference".
+example would be a Reference to a website such as "#http://www.isene.com/" or
+a file "#file:/path/to/filename". A Reference with spaces must be enclosed in
+single quotation marks - "#'This is a reference'" as opposed to "#Reference".
 
 There are two types of Reference:
 	1. A redirection or hard reference 
@@ -681,8 +684,10 @@ WOIM list (2011-12-08)
 					The main body of the WOIM item, the "meat" of the line
 			[?] Additive
 				Reference
-					+ A "#" followed by the name of an item, list or anything else
-					 EXAMPLE: Reference to a website = #http://www.isene.com/
+					+ A "#" followed by an item name or identifier, a whole list or 
+					 anything else; EXAMPLES: 
+						Reference to a website = #http://www.isene.com/
+						Reference to a file = #file:/path/to/filename
 					+ A Reference with spaces is enclosed in single quotation marks
 					 (#'This is a reference' as opposed to #Reference)
 					+ There are two types of references; OR: 
@@ -757,6 +762,20 @@ definition itself; Geir Isene <g@isene.com>. More at http//isene.com
 
 ==============================================================================
 5. Changelog                                                  *WOIM-Changelog*
+
+VERSION 1.7			2012-01-01
+
+	Changes:
+  Expanded "gr" (Goto Reference):
+    Made it possible to reference external files by the use of
+    #file:/pathto/filename, #file:~/filename or #file:filename
+    As long as the reference is prefixed with "file:" after
+    the "#", the command "gr" will open the referenced file.
+  Added HTML conversion vith the use of <leader>H.
+  Improved LaTeX conversion.
+  After an HTML/LaTeX conversion, filetype is set to html/tex.
+  Changed the color of multi-indicator (+) from red to purple.
+
 
 VERSION 1.6			2011-12-08
 

@@ -12,14 +12,17 @@
 "		Further, I am under no obligation to maintain or extend
 "		this software. It is provided on an 'as is' basis without
 "		any expressed or implied warranty.
-" Version:	1.6 - compatible with the WOIM definition v. 1.6
-" Modified:	2011-12-08
-"
-" Changes since previous version:
-"   Added marking of literal regions with special marking of start/end ("/")
-"   Added <leader><DOWN> and <leader><UP>
-"   Fixed syntax marking for State/Transitions where indent is "*"
-"   Fixed escaping "\", "{" and "}" for LaTeX conversion
+" Version:	1.7 - compatible with the WOIM definition v. 1.7
+" Modified:	2012-01-01
+" Changes:      Expanded "gr" (Goto Reference):
+"                 Made it possible to reference external files by the use of
+"                 #file:/pathto/filename, #file:~/filename or #file:filename
+"                 As long as the reference is prefixed with "file:" after
+"                 the "#", the command "gr" will open the referenced file.
+"               Added HTML conversion vith the use of <leader>H.
+"               Improved LaTeX conversion.
+"               After an HTML/LaTeX conversion, filetype is set to html/tex.
+"               Changed the color of multi-indicator (+) from red to purple.
 
 " INSTRUCTIONS {{{1
 "
@@ -27,6 +30,10 @@
 "
 " Use <SPACE> to toggle one fold
 " Use \0 to \9, \a, \b, \c, \d, \e, \f to show up to 15 levels expanded
+"
+" Use "gr" when the cursor is on a reference to jump to the referenced item.
+" A reference can be in the list or to a file by the use of
+" #file:/pathto/filename, #file:~/filename or #file:filename.
 "
 " Use <leader>s to remove underlining of States (prefixed with S:)
 " Use <leader>S to add underlining of States (prefixed with S:)
@@ -39,21 +46,23 @@
 " Use <leader><SPACE> to go to the next open template element
 " (A template element is a WOIM item ending in an equal sign)
 "
+" As a sort of "presentation mode", you can traverse a WOIM list by using
 " g<DOWN> or g<UP> to view only the current line and its ancestors.
 " An alternative is <leader><DOWN> and <leader><UP> to open more levels down.
 " 
 " Use <leader>L to convert the entire document to LaTaX
-
+" Use <leader>H to convert the entire document to HTML
+"
 " Use <leader>z encrypts the current line (including all sublevels if folded)
 " Use <leader>Z encrypts the current file (all lines)
 " Use <leader>x decrypts the current line
 " Use <leader>X decrypts the current file (all lines)
+" <leader>z and <leader>x can be used with visual ranges
 "
 " A dot file (file name starts with a "." such as .test.woim) is
 " automatically encrypted on save and decrypted on opening.
 "
-" Syntax updated at start and every time you leave Insert mode
-" As a sort of "presentation mode", you can traverse a WOIM list by using
+" Syntax is updated at start and every time you leave Insert mode.
 
 
 " Initializing {{{1
@@ -77,7 +86,6 @@ syn sync fromstart
 autocmd InsertLeave * :syntax sync fromstart
 
 " Functions {{{1
-
 " Folding {{{2
 " Mapped to <SPACE> and <leader>0 - <leader>f
 set foldtext=WOIMFoldText()
@@ -112,39 +120,163 @@ endfunction
 
 " Goto reference {{{2
 " Mapped to 'gr'
-function! GotoRef()
-  let current_line = getline('.')
-  if match(current_line,'#') >= 0
-    if match(current_line,"#\'") >= 0
-      let ref_word = matchstr(current_line,"#\'.*\'")
-	  let ref_word = substitute(ref_word, "\'", '', 'g')
-      let ref_word = substitute(ref_word, '#', '', 'g')
-      let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
-	  let ref_dest = "\\\(#\\\'\\\)\\\@<!" . ref_dest
-	else
-      if match(current_line,"#.* ") >= 0
-        let ref_word = matchstr(current_line,"#.* ")
-	  else
-        let ref_word = matchstr(current_line,"#.*$")
-	  endif
-      let ref_word = substitute(ref_word, '#', '', 'g')
-      let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
-	  let ref_dest = "#\\\@<!" . ref_dest
-	endif
-    let @/ = ref_dest
-	call search(ref_dest)
-    let new_line = getline('.')
-    if new_line == current_line
-	  echo "No destination"
-	endif
-  else
-    echo "No reference in the WOIM item"
-  endif
-endfunction
+if !exists("*GotoRef") 
+  function! GotoRef()
+    let current_line = getline('.')
+    if match(current_line,'#') >= 0
+      if match(current_line,'file:') >=0
+        if match(current_line,"#.* ") >= 0
+          let ref_word = matchstr(current_line,"#.* ")
+        else
+          let ref_word = matchstr(current_line,"#.*$")
+        endif
+        let ref_word = substitute(ref_word, '#file:', '', 'g')
+        exe "edit " . fnameescape(ref_word)
+        return
+      endif
+      if match(current_line,"#\'") >= 0
+        let ref_word = matchstr(current_line,"#\'.*\'")
+        let ref_word = substitute(ref_word, "\'", '', 'g')
+        let ref_word = substitute(ref_word, '#', '', 'g')
+        let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
+        let ref_dest = "\\\(#\\\'\\\)\\\@<!" . ref_dest
+      else
+        if match(current_line,"#.* ") >= 0
+          let ref_word = matchstr(current_line,"#.* ")
+        else
+          let ref_word = matchstr(current_line,"#.*$")
+        endif
+        let ref_word = substitute(ref_word, '#', '', 'g')
+        let ref_dest = substitute(ref_word, '/', '.*\\n\\s*.\\{-}', 'g')
+        let ref_dest = "#\\\@<!" . ref_dest
+      endif
+      let @/ = ref_dest
+      call search(ref_dest)
+      let new_line = getline('.')
+      if new_line == current_line
+        echo "No destination"
+      endif
+    else
+      echo "No reference in the WOIM item"
+    endif
+  endfunction
+endif
 
+"HTML conversion{{{2
+"Mapped to '<leader>H'
+function! HTMLconversion ()
+    try
+        "Remove VIM tagline
+        execute '%s/^vim:.*//g'
+    catch
+    endtry
+    try
+        "first line of a WOIM list is bold
+        execute '%s/^\(\S.*\)$/<strong>\1<\/strong>/g'
+    catch
+    endtry
+    try
+        "WOIMb
+        execute '%s/ \@<=\*\(.\{-}\)\* /<strong>\1<\/strong>/g'
+    catch
+    endtry
+    try
+        "WOIMi
+        execute '%s/ \@<=\/\(.\{-}\)\/ /<em>\1<\/em>/g'
+    catch
+    endtry
+    try
+        "WOIMu
+        execute '%s/ \@<=_\(.\{-}\)_ /<u>\1<\/u>/g'
+    catch
+    endtry
+    try
+        "WOIMquote
+        execute '%s/\(\".*\"\)/<em>\1<\/em>/g'
+    catch
+    endtry
+    try
+        "WOIMcomment
+        execute '%s/\((.*)\)/<em>\1<\/em>/g'
+    catch
+    endtry
+    try
+        "WOIMindent
+        execute "%s/\\(\\t\\|\\*\\)\\@<=\\(\\d.\\{-}\\)\\s/<font color=\"purple\">\\2<\\/font> /g"
+    catch
+    endtry
+    try
+        "WOIMmulti (+)
+        execute '%s/\(\t\|\*\)+/\t<font color="purple">+<\/font>/g'
+    catch
+    endtry
+    try
+        "WOIMref
+        execute "%s/\\(#\\{1,2}\\(\\'[a-zA-ZæøåÆØÅ0-9,.:/ _&?%=\\-\\*]\\+\\'\\|[a-zA-ZæøåÆØÅ0-9.:/_&?%=\\-\\*]\\+\\)\\)/<font color=\"purple\">\\1<\\/font>/g"
+    catch
+    endtry
+    try
+        "WOIMmove
+        execute '%s/\(>>\|<<\|->\|<-\)/<font color="red"><strong>\1</strong><\/font>/g'
+    catch
+    endtry
+    try
+        "WOIMqual
+        execute '%s/\(\[.\{-}\]\)/<font color="green">\1<\/font>/g'
+    catch
+    endtry
+    try
+        "WOIMop
+        execute "%s/\\(\\s\\|\\*\\)\\@<=\\([A-ZÆØÅ_/]\\{-2,}:\\s\\)/<font color=\"blue\">\\2<\\/font>/g"
+    catch
+    endtry
+    try
+        "WOIMtag
+        execute "%s/\\(\\s\\|\\*\\)\\@<=\\([a-zA-ZæøåÆØÅ0-9,._&?%= \\-\\/+<>#']\\{-2,}:\\s\\)/<font color=\"red\">\\2<\\/font>/g"
+    catch
+    endtry
+    try
+        "WOIMsc
+        execute '%s/\(;\)/<font color="green">\1<\/font>/g'
+    catch
+    endtry
+    try
+        "Substitute space in second line of multi-item
+        execute '%s/\(^\|\t\|\*\)\@<=\(\t\|\*\) /\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;/g'
+    catch
+    endtry
+    try
+        "Substitute tabs
+        execute '%s/\(^\|\t\|\*\)\@<=\(\t\|\*\)/\&nbsp;\&nbsp;\&nbsp;\&nbsp;/g'
+    catch
+    endtry
+    try
+        "Substitute newlines with <br />
+        execute '%s/\n/<br \/>\r/g'
+    catch
+    endtry
+    "Document start
+    normal ggO<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+    normal o<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    normal o<head>
+    normal o<title>WOIM list</title>
+    normal o<meta name="creator" content="WOIM plugin for VIM: http://vim.sourceforge.net/scripts/script.php?script_id=2518" />
+    normal o<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    normal o</head>
+    normal o<body>
+    "Document end
+    normal GO</body>
+    normal o</html>
+    set filetype=html
+endfunction
 "LaTeX conversion{{{2
 "Mapped to '<leader>L'
 function! LaTeXconversion ()
+    try
+        "Remove VIM tagline
+        execute '%s/^vim:.*//g'
+    catch
+    endtry
     try
         "Escape "\"
         execute '%s/\\/\\\\/g'
@@ -182,7 +314,7 @@ function! LaTeXconversion ()
     endtry
     try
         "WOIMmulti
-        execute '%s/\(\t\|\*\)+/\\tab \\textcolor{r}{+}/g'
+        execute '%s/\(\t\|\*\)+/\\tab \\textcolor{v}{+}/g'
     catch
     endtry
     try
@@ -206,7 +338,6 @@ function! LaTeXconversion ()
     catch
     endtry
     try
-    try
         "WOIMqual
         execute '%s/\(\[.\{-}\]\)/\\textcolor{g}{\1}/g'
     catch
@@ -226,13 +357,14 @@ function! LaTeXconversion ()
         execute '%s/\(;\)/\\textcolor{g}{\1}/g'
     catch
     endtry
-    "Substitute tabs + space in second line of multi-item
-        execute '%s/\(\t\|\*\)  /\\tab \\tab /g'
+    try
+        "Substitute tabs + space in second line of multi-item
+        execute '%s/\(^\|\t\|\*\)\@<=\(\t\|\*\)  /\\tab \\tab /g'
     catch
     endtry
     try
-    "Substitute tabs
-        execute '%s/\(\t\|\*\)/\\tab /g'
+        "Substitute tabs
+        execute '%s/\(^\|\t\|\*\)\@<=\(\t\|\*\)/\\tab /g'
     catch
     endtry
     "Document start
@@ -255,6 +387,7 @@ function! LaTeXconversion ()
     "Document end
     normal Go\end{alltt}
     normal o\end{document}
+    set filetype=tex
 endfunction
 
 " Syntax definitions {{{1
@@ -338,10 +471,10 @@ syn match   WOIMvim "^vim:.*"
 hi	    Folded	ctermfg=yellow ctermbg=none guibg=NONE guifg=darkyellow gui=bold
 hi	    L1		gui=bold term=bold cterm=bold
 hi def link WOIMident	Define
-hi def link WOIMmulti	String
+hi def link WOIMmulti	Define
+hi def link WOIMtag	String
 hi def link WOIMop	Function
 hi def link WOIMqual	Type
-hi def link WOIMtag	String
 hi def link WOIMref	Define
 hi def link WOIMkey	Define
 hi          WOIMlit     ctermfg=none ctermbg=none gui=italic term=italic cterm=italic
@@ -407,6 +540,7 @@ vmap <leader>x   :!openssl bf -d -a 2>/dev/null<CR><C-L>
 nmap <leader>X   :%!openssl bf -d -a 2>/dev/null<CR><C-L>
 
 nmap <leader>L  :call LaTeXconversion()<CR>
+nmap <leader>H  :call HTMLconversion()<CR>
 
 " vim modeline {{{1
 " vim: sw=4 sts=4 et fdm=marker fillchars=fold\:\ :
