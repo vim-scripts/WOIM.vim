@@ -1,5 +1,9 @@
 This is a mirror of http://www.vim.org/scripts/script.php?script_id=2518
 
+THIS PLUGIN HAS BEEN REPLACED WITH THE HYPERLIST PLUGIN - SEE: http://www.vim.org/scripts/script.php?script_id=4006
+
+
+
 It's an Outliner, a TODO-list solution, a project management tool, a Business Process Management aid, a data modeler, a Use Case facilitator, a way to describe the human DNA or the history of the universe ;) It can also encrypt your lists and be used as a very structured  password safe.
 
 WOIM is a methodology to describe anything - any state, item(s), pattern, action, process, transition, program, instruction set etc.
